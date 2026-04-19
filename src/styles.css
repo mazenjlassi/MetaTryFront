@@ -1,1 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* FULL APP BACKGROUND */
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0b1220;
+  color: #fff;
+}
+
+/* REMOVE WHITE EDGES */
+app-root {
+  display: block;
+  width: 100%;
+}
+
+/* MAIN CONTENT */
+.content {
+  padding: 20px 40px;
+}
