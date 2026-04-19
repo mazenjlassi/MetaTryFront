@@ -1,0 +1,27 @@
+<div class="dashboard">
+
+  <!-- LEFT -->
+  <div class="card">
+    <h3>🔥 Top Posts</h3>
+    <div class="posts-list">
+      <app-post-card *ngFor="let post of posts" [post]="post"></app-post-card>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="card chart-card">
+    <h3>📊 Performance</h3>
+    <div class="chart-wrapper">
+      <app-posts-chart></app-posts-chart>
+    </div>
+  </div>
+
+  <!-- NEW CARD -->
+  <div class="card chart-card">
+    <h3>🌍 Platform Distribution</h3>
+    <div class="chart-wrapper">
+      <app-platform-chart></app-platform-chart>
+    </div>
+  </div>
+
+</div>
