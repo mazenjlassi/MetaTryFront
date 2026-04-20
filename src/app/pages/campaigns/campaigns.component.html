@@ -1,0 +1,166 @@
+<div class="campaign-page">
+
+  <!-- FORM -->
+  <div class="card form-card">
+    <h2>🚀 Create Campaign</h2>
+
+    <input [(ngModel)]="name" placeholder="Campaign name" />
+    <input [(ngModel)]="topic" placeholder="Topic" />
+    <input type="number" [(ngModel)]="postNumber" min="1" />
+
+    <button (click)="generate()">
+      {{ loading ? 'Generating...' : 'Generate Campaign' }}
+    </button>
+  </div>
+
+  <!-- POSTS -->
+  <div class="posts-section" *ngIf="posts.length > 0">
+
+    <div class="card post-card" *ngFor="let post of posts">
+
+      <!-- TOP BAR -->
+      <div class="top-actions">
+        <span class="platform">{{ post.platform }}</span>
+
+        <button class="delete-btn" (click)="delete(post)">
+          🗑
+        </button>
+      </div>
+
+      <!-- 🔥 SOCIAL PREVIEW -->
+      <div class="preview">
+
+        <!-- INSTAGRAM -->
+        <div *ngIf="post.platform === 'INSTAGRAM'" class="instagram">
+
+          <img *ngIf="post.image?.imageUrl"
+               [src]="post.image.imageUrl"
+               class="preview-image" />
+
+          <div class="caption">
+            <strong>{{ post.title }}</strong>
+            <p>{{ post.content }}</p>
+
+            <!-- optional link display -->
+            <span *ngIf="post.link" class="post-link">
+              🔗 {{ post.link }}
+            </span>
+          </div>
+
+        </div>
+
+        <!-- LINKEDIN -->
+        <div *ngIf="post.platform === 'LINKEDIN'" class="linkedin">
+
+          <div class="header">
+            <strong>3LM Solutions</strong>
+            <span>• now</span>
+          </div>
+
+          <p>{{ post.content }}</p>
+
+          <!-- LINK -->
+          <a *ngIf="post.link"
+             [href]="post.link"
+             target="_blank"
+             class="post-link">
+            🔗 {{ post.link }}
+          </a>
+
+        </div>
+
+        <!-- FACEBOOK -->
+        <div *ngIf="post.platform === 'FACEBOOK'" class="facebook">
+
+          <div class="header">
+            <strong>3LM Solutions</strong>
+            <span>• now</span>
+          </div>
+
+          <p>{{ post.content }}</p>
+
+          <!-- LINK -->
+          <a *ngIf="post.link"
+             [href]="post.link"
+             target="_blank"
+             class="post-link">
+            🔗 {{ post.link }}
+          </a>
+
+          <img *ngIf="post.image?.imageUrl"
+               [src]="post.image.imageUrl"
+               class="preview-image" />
+
+        </div>
+
+      </div>
+
+      <!-- ✏️ EDIT SECTION -->
+      <div class="edit">
+
+        <input [(ngModel)]="post.title" placeholder="Title" />
+
+        <textarea [(ngModel)]="post.content"></textarea>
+
+        <input [(ngModel)]="post.hashtags" placeholder="Hashtags" />
+
+        <!-- 🔥 NEW LINK FIELD -->
+        <input [(ngModel)]="post.link" placeholder="Link (optional)" />
+
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="actions">
+
+        <label>
+          <input type="checkbox" [(ngModel)]="post.approved" />
+          Approved
+        </label>
+
+        <label>
+          <input type="checkbox" [(ngModel)]="post.permanent" />
+          Permanent
+        </label>
+
+      </div>
+
+      <!-- DATE -->
+      <input type="datetime-local" [(ngModel)]="post.scheduledAt" />
+
+      <!-- IMAGE -->
+      <div class="image-section">
+
+        <button (click)="generateImage(post)">
+          🖼 Generate Image
+        </button>
+
+        <span *ngIf="post.platform === 'INSTAGRAM' && !post.image?.imageUrl"
+              class="warning">
+          ⚠ Instagram requires image
+        </span>
+
+      </div>
+
+      <!-- SAVE -->
+      <div class="save-section">
+
+        <button (click)="save(post)"
+                [disabled]="!canSave(post) || savingPostId === post.id">
+          💾 Save
+        </button>
+
+        <span *ngIf="savingPostId === post.id" class="saving">
+          Saving...
+        </span>
+
+        <span *ngIf="savedPostId === post.id" class="saved">
+          ✓ Saved
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

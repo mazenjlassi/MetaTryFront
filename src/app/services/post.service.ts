@@ -25,4 +25,16 @@ export class PostService {
   getPostStats() {
   return this.http.get<any>('http://localhost:8081/posts/stats');
 }
+
+getDrafts() {
+  return this.http.get('http://localhost:8081/posts/drafts');
+}
+
+getScheduled() {
+  return this.http.get('http://localhost:8081/posts/scheduled');
+}
+
+getPublished() {
+  return this.http.get('http://localhost:8081/posts/published');
+}
 }

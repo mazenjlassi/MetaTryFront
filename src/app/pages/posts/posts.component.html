@@ -1,0 +1,65 @@
+<div class="posts-page">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'drafts'" (click)="setTab('drafts')">
+      Drafts
+    </button>
+
+    <button [class.active]="activeTab === 'scheduled'" (click)="setTab('scheduled')">
+      Scheduled
+    </button>
+
+    <button [class.active]="activeTab === 'published'" (click)="setTab('published')">
+      Published
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="loading">
+    Loading...
+  </div>
+
+  <!-- POSTS -->
+  <div class="posts-grid">
+
+    <div class="post-card" *ngFor="let post of posts">
+
+      <!-- PLATFORM -->
+      <div class="top">
+        <span>{{ post.platform }}</span>
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="preview">
+
+        <!-- Instagram -->
+        <div *ngIf="post.platform === 'INSTAGRAM'">
+          <img *ngIf="post.image?.imageUrl" [src]="post.image.imageUrl" />
+          <p>{{ post.content }}</p>
+        </div>
+
+        <!-- LinkedIn -->
+        <div *ngIf="post.platform === 'LINKEDIN'" class="light">
+          <p>{{ post.content }}</p>
+        </div>
+
+        <!-- Facebook -->
+        <div *ngIf="post.platform === 'FACEBOOK'" class="light">
+          <p>{{ post.content }}</p>
+          <img *ngIf="post.image?.imageUrl" [src]="post.image.imageUrl" />
+        </div>
+
+      </div>
+
+      <!-- INFO -->
+      <div class="meta">
+        <span *ngIf="post.scheduledAt">📅 {{ post.scheduledAt }}</span>
+        <span *ngIf="post.approved">✔ Approved</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

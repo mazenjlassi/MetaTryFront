@@ -1,0 +1,199 @@
+.campaign-page {
+  display: flex;
+  gap: 20px;
+}
+
+.form-card {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.posts-section {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.post-card {
+  background: #111827;
+  padding: 20px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input, textarea {
+  background: #1f2937;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  color: white;
+}
+
+textarea {
+  min-height: 80px;
+}
+
+button {
+  background: #3b82f6;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #374151;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  gap: 20px;
+}
+
+.image-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.post-image {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.warning {
+  color: #f87171;
+  font-size: 12px;
+}
+
+.save-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.saving {
+  color: #facc15;
+  font-size: 12px;
+}
+
+.saved {
+  color: #4ade80;
+  font-size: 12px;
+}
+
+.platform {
+  font-size: 12px;
+  color: #94a3b8;
+}
+.top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* DELETE BUTTON */
+.delete-btn {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+/* PREVIEW BASE */
+.preview {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1f2937;
+}
+
+/* IMAGE */
+.preview-image {
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* INSTAGRAM */
+.instagram {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.instagram .caption {
+  padding: 10px;
+}
+
+/* LINKEDIN */
+.linkedin {
+  background: #fff;
+  color: black;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.linkedin .header {
+  font-size: 13px;
+  color: gray;
+  margin-bottom: 10px;
+}
+
+/* FACEBOOK */
+.facebook {
+  background: #fff;
+  color: black;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.facebook .header {
+  font-size: 13px;
+  color: gray;
+  margin-bottom: 10px;
+}
+
+/* EDIT */
+.edit {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* INPUTS */
+input, textarea {
+  background: #111827;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  color: white;
+}
+
+/* ACTIONS */
+.actions {
+  display: flex;
+  gap: 15px;
+}
+
+/* SAVE */
+.save-section {
+  margin-top: 10px;
+}
+
+/* WARNING */
+.warning {
+  color: #f87171;
+  font-size: 12px;
+}
