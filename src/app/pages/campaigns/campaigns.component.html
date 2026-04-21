@@ -148,6 +148,12 @@
                 [disabled]="!canSave(post) || savingPostId === post.id">
           💾 Save
         </button>
+        <button  (click)="publishNow(post)" 
+                  [disabled]="publishingPostId === post.id || !post.approved">
+                   <span *ngIf="publishingPostId === post.id">Publishing...</span>
+                  <span *ngIf="publishingPostId !== post.id">🚀 Publish Now</span>
+        </button>
+      
 
         <span *ngIf="savingPostId === post.id" class="saving">
           Saving...

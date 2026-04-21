@@ -37,4 +37,8 @@ getScheduled() {
 getPublished() {
   return this.http.get('http://localhost:8081/posts/published');
 }
+
+publishPost(postId: number) {
+  return this.http.post(`http://localhost:8081/publish/${postId}`, {});
+}
 }
