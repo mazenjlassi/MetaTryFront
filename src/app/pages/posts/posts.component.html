@@ -9,6 +9,9 @@
     <button [class.active]="activeTab === 'scheduled'" (click)="setTab('scheduled')">
       Scheduled
     </button>
+    <button [class.active]="activeTab === 'permanent'" (click)="setTab('permanent')">
+       Permanent
+    </button>
 
     <button [class.active]="activeTab === 'published'" (click)="setTab('published')">
       Published
@@ -54,8 +57,18 @@
 
       <!-- INFO -->
       <div class="meta">
-        <span *ngIf="post.scheduledAt">📅 {{ post.scheduledAt }}</span>
+        <span *ngIf="post.created">📅 {{ post.scheduledAt }}</span>
         <span *ngIf="post.approved">✔ Approved</span>
+      </div>
+      <!-- ACTIONS (FIXED) -->
+      <div class="actions">
+
+        <button (click)="viewDetails(post.id)">
+          View Details
+        </button>
+
+        
+
       </div>
 
     </div>

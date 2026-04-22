@@ -1,0 +1,120 @@
+<div class="details-page">
+
+  <!-- BACK -->
+  <button class="back" (click)="goBack()">⬅ Back</button>
+
+  <div *ngIf="loading">Loading...</div>
+
+  <div *ngIf="post" class="layout">
+
+    <!-- ================= LEFT (70%) ================= -->
+    <div class="left">
+
+      <div class="post-card">
+
+        <div class="header">
+          <span class="platform">{{ post.platform }}</span>
+          <span *ngIf="post.campaignName">📢 {{ post.campaignName }}</span>
+        </div>
+
+        <img *ngIf="post.imageUrl" [src]="post.imageUrl" />
+
+        <h2>{{ post.title }}</h2>
+        <p>{{ post.content }}</p>
+
+        <div *ngIf="post.hashtags" class="hashtags">
+          #{{ post.hashtags }}
+        </div>
+
+        <div class="meta">
+          <span *ngIf="post.publishedAt">📅 {{ post.publishedAt }}</span>
+          <span *ngIf="post.scheduledAt">⏳ {{ post.scheduledAt }}</span>
+          <span *ngIf="post.permanent">♾ Permanent</span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= RIGHT (30%) ================= -->
+   <div class="right">
+
+  <!-- 📊 PERFORMANCE -->
+  <div *ngIf="post.status === 'PUBLISHED'" class="panel">
+
+    <h3>📊 Performance</h3>
+
+    <div class="metric">❤️ {{ post.likes || 0 }}</div>
+    <div class="metric">💬 {{ post.commentsCount || 0 }}</div>
+    <div class="metric">🔁 {{ post.shares || 0 }}</div>
+
+  </div>
+
+  <!-- ✏️ UPDATE PANEL -->
+  <div *ngIf="canUpdate()" class="panel">
+
+    <!-- SHOW BUTTON -->
+    <div *ngIf="!editMode">
+      <button class="primary" (click)="openEdit()">
+        ✏️ Update Post
+      </button>
+    </div>
+
+    <!-- 🔥 EDIT MODE -->
+    <div *ngIf="editMode" class="edit-card">
+
+      <h3>Edit Post</h3>
+
+      <!-- ✅ IMAGE PREVIEW -->
+      <img *ngIf="post.imageUrl" [src]="post.imageUrl" class="edit-image" />
+
+      <!-- 🔥 GENERATE BUTTON (THIS WAS MISSING) -->
+      <button 
+        type="button"
+        class="generate"
+        (click)="generateImage()"
+        [disabled]="generatingImage">
+
+        <span *ngIf="!generatingImage">🎨 Generate New Image</span>
+        <span *ngIf="generatingImage">Generating...</span>
+
+      </button>
+
+      <!-- ERROR -->
+      <div *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
+      </div>
+
+      <!-- SUCCESS -->
+      <div *ngIf="successMessage" class="success">
+        {{ successMessage }}
+      </div>
+
+      <!-- FORM -->
+      <label>Title</label>
+      <input [(ngModel)]="post.title" />
+
+      <label>Content</label>
+      <textarea [(ngModel)]="post.content"></textarea>
+
+      <label>Hashtags</label>
+      <input [(ngModel)]="post.hashtags" />
+
+      <!-- SAVE -->
+      <button 
+        class="primary"
+        (click)="updatePost()" 
+        [disabled]="saving">
+
+        <span *ngIf="!saving">💾 Save</span>
+        <span *ngIf="saving">Saving...</span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>

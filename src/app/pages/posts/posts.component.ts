@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CampaignService } from '../../services/campaign.service';
 import { CommonModule } from '@angular/common';
 import { PostService } from '../../services/post.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-posts',
@@ -16,7 +16,10 @@ export class PostsComponent implements OnInit {
   activeTab: string = 'drafts';
   loading = false;
 
-  constructor(private service :PostService) {}
+  constructor(
+    private service: PostService,
+    private router: Router // ✅ added
+  ) {}
 
   ngOnInit() {
     this.loadPosts();
@@ -36,6 +39,8 @@ export class PostsComponent implements OnInit {
       request = this.service.getDrafts();
     } else if (this.activeTab === 'scheduled') {
       request = this.service.getScheduled();
+    } else if (this.activeTab === 'permanent') {
+      request = this.service.getPermanent();
     } else {
       request = this.service.getPublished();
     }
@@ -48,4 +53,16 @@ export class PostsComponent implements OnInit {
       error: () => this.loading = false
     });
   }
+
+  // ✅ NEW METHOD
+  viewDetails(id: number) {
+    this.router.navigate(['/posts', id]);
+  }
+
+
+
+// ✅ Business rule
+canEdit(post: any): boolean {
+  return post.permanent || post.status !== 'PUBLISHED';
+}
 }

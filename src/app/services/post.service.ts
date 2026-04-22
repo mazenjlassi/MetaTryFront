@@ -41,4 +41,19 @@ getPublished() {
 publishPost(postId: number) {
   return this.http.post(`http://localhost:8081/publish/${postId}`, {});
 }
+
+getPermanent() {
+  return this.http.get('http://localhost:8081/posts/permanent');
+}
+getById(id: number) {
+  return this.http.get(`http://localhost:8081/posts/${id}`);
+}
+updatePost(id: number, data: any) {
+  return this.http.put(`http://localhost:8081/posts/${id}`, data, {
+    responseType: 'text'
+  });
+}
+generateImage(id: number) {
+  return this.http.post(`http://localhost:8081/posts/${id}/generate-image`, {});
+}
 }

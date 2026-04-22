@@ -60,3 +60,71 @@
 .loading {
   margin-bottom: 20px;
 }
+/* ACTIONS */
+.actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* BUTTON */
+.actions button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* HOVER EFFECT */
+.actions button:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* CLICK EFFECT */
+.actions button:active {
+  transform: scale(0.97);
+}*
+/* ACTIONS */
+.actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* BASE BUTTON */
+.actions button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* HOVER */
+.actions button:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* CLICK */
+.actions button:active {
+  transform: scale(0.97);
+}
+
+/* EDIT BUTTON */
+.actions .edit {
+  background: #10b981;
+}
+
+.actions .edit:hover {
+  background: #059669;
+}
