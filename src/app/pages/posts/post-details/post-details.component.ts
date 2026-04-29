@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PostService } from '../../../services/post.service';
+import { CommentService } from '../../../services/comment.service'; // 🔥 NEW
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -17,14 +18,18 @@ export class PostDetailsComponent implements OnInit {
   loading = true;
   editMode = false;
 
-  // ✅ NEW
   saving = false;
   errorMessage = '';
   successMessage = '';
 
+  // 🔥 COMMENTS
+  comments: any[] = [];
+  loadingComments = false;
+
   constructor(
     private route: ActivatedRoute,
     private service: PostService,
+    private commentService: CommentService, // 🔥 NEW
     private location: Location
   ) {}
 
@@ -32,10 +37,15 @@ export class PostDetailsComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
-      this.service.getById(+id).subscribe({
+      const postId = +id;
+
+      this.service.getById(postId).subscribe({
         next: (res: any) => {
           this.post = res;
           this.loading = false;
+
+          // 🔥 LOAD COMMENTS
+          this.loadComments(postId);
         },
         error: () => {
           this.errorMessage = 'Failed to load post';
@@ -44,6 +54,48 @@ export class PostDetailsComponent implements OnInit {
       });
     }
   }
+
+  // ================= COMMENTS =================
+
+  loadComments(postId: number) {
+    this.loadingComments = true;
+
+    this.commentService.getByPost(postId).subscribe({
+      next: (res) => {
+        this.comments = res;
+        this.loadingComments = false;
+      },
+      error: () => {
+        this.loadingComments = false;
+      }
+    });
+  }
+
+  getSentimentClass(sentiment: string): string {
+    if (sentiment === 'POSITIVE') return 'positive';
+    if (sentiment === 'NEGATIVE') return 'negative';
+    return 'neutral';
+  }
+
+  filterSentiment(sentiment: string) {
+    this.loadingComments = true;
+
+    this.commentService.getByPostAndSentiment(this.post.id, sentiment).subscribe({
+      next: (res) => {
+        this.comments = res;
+        this.loadingComments = false;
+      },
+      error: () => {
+        this.loadingComments = false;
+      }
+    });
+  }
+
+  resetComments() {
+    this.loadComments(this.post.id);
+  }
+
+  // ================= POST =================
 
   canUpdate(): boolean {
     return this.post?.status !== 'PUBLISHED';
@@ -74,35 +126,30 @@ export class PostDetailsComponent implements OnInit {
       },
       error: (err) => {
         this.saving = false;
-
-        // ✅ show backend message if exists
-        this.errorMessage =
-          err?.error?.message || 'Update failed ❌';
+        this.errorMessage = err?.error?.message || 'Update failed ❌';
       }
     });
   }
 
   generatingImage = false;
 
-generateImage() {
-  this.generatingImage = true;
-  this.errorMessage = '';
-  this.successMessage = '';
+  generateImage() {
+    this.generatingImage = true;
+    this.errorMessage = '';
+    this.successMessage = '';
 
-  this.service.generateImage(this.post.id).subscribe({
-    next: (res: any) => {
-      // ✅ update preview instantly
-      this.post.imageUrl = res.imageUrl;
-
-      this.generatingImage = false;
-      this.successMessage = 'New image generated 🎨';
-    },
-    error: () => {
-      this.generatingImage = false;
-      this.errorMessage = 'Image generation failed ❌';
-    }
-  });
-}
+    this.service.generateImage(this.post.id).subscribe({
+      next: (res: any) => {
+        this.post.imageUrl = res.imageUrl;
+        this.generatingImage = false;
+        this.successMessage = 'New image generated 🎨';
+      },
+      error: () => {
+        this.generatingImage = false;
+        this.errorMessage = 'Image generation failed ❌';
+      }
+    });
+  }
 
   goBack() {
     this.location.back();

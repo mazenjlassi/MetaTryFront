@@ -34,87 +34,116 @@
 
       </div>
 
+      <!-- ================= 💬 COMMENTS ================= -->
+
+      <!-- SHOW ONLY WHEN PUBLISHED -->
+      <div *ngIf="post.status === 'PUBLISHED'" class="comments-section">
+
+        <h2>💬 Comments</h2>
+
+        <!-- FILTERS -->
+        <div class="filters">
+          <button (click)="resetComments()">All</button>
+          <button (click)="filterSentiment('POSITIVE')">🟢 Positive</button>
+          <button (click)="filterSentiment('NEGATIVE')">🔴 Negative</button>
+          <button (click)="filterSentiment('NEUTRAL')">⚪ Neutral</button>
+        </div>
+
+        <div *ngIf="loadingComments">⏳ Loading comments...</div>
+
+        <div *ngIf="!loadingComments && comments.length === 0">
+          No comments yet
+        </div>
+
+        <div *ngFor="let comment of comments" class="comment-card">
+
+          <div class="comment-header">
+            <span class="author">
+              {{ comment.authorName || 'Unknown' }}
+            </span>
+
+            <span class="sentiment"
+                  [ngClass]="getSentimentClass(comment.sentiment)">
+              {{ comment.sentiment }}
+            </span>
+          </div>
+
+          <div class="comment-text">
+            {{ comment.commentText }}
+          </div>
+
+          <div class="comment-date">
+            {{ comment.createdAt | date:'short' }}
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- MESSAGE WHEN NOT PUBLISHED -->
+      <div *ngIf="post.status !== 'PUBLISHED'" class="no-comments-info">
+        💡 Comments will appear after the post is published
+      </div>
+
     </div>
 
     <!-- ================= RIGHT (30%) ================= -->
-   <div class="right">
+    <div class="right">
 
-  <!-- 📊 PERFORMANCE -->
-  <div *ngIf="post.status === 'PUBLISHED'" class="panel">
-
-    <h3>📊 Performance</h3>
-
-    <div class="metric">❤️ {{ post.likes || 0 }}</div>
-    <div class="metric">💬 {{ post.commentsCount || 0 }}</div>
-    <div class="metric">🔁 {{ post.shares || 0 }}</div>
-
-  </div>
-
-  <!-- ✏️ UPDATE PANEL -->
-  <div *ngIf="canUpdate()" class="panel">
-
-    <!-- SHOW BUTTON -->
-    <div *ngIf="!editMode">
-      <button class="primary" (click)="openEdit()">
-        ✏️ Update Post
-      </button>
-    </div>
-
-    <!-- 🔥 EDIT MODE -->
-    <div *ngIf="editMode" class="edit-card">
-
-      <h3>Edit Post</h3>
-
-      <!-- ✅ IMAGE PREVIEW -->
-      <img *ngIf="post.imageUrl" [src]="post.imageUrl" class="edit-image" />
-
-      <!-- 🔥 GENERATE BUTTON (THIS WAS MISSING) -->
-      <button 
-        type="button"
-        class="generate"
-        (click)="generateImage()"
-        [disabled]="generatingImage">
-
-        <span *ngIf="!generatingImage">🎨 Generate New Image</span>
-        <span *ngIf="generatingImage">Generating...</span>
-
-      </button>
-
-      <!-- ERROR -->
-      <div *ngIf="errorMessage" class="error">
-        {{ errorMessage }}
+      <!-- 📊 PERFORMANCE -->
+      <div *ngIf="post.status === 'PUBLISHED'" class="panel">
+        <h3>📊 Performance</h3>
+        <div class="metric">❤️ {{ post.likes || 0 }}</div>
+        <div class="metric">💬 {{ post.commentsCount || 0 }}</div>
+        <div class="metric">🔁 {{ post.shares || 0 }}</div>
       </div>
 
-      <!-- SUCCESS -->
-      <div *ngIf="successMessage" class="success">
-        {{ successMessage }}
+      <!-- ✏️ UPDATE PANEL -->
+      <div *ngIf="canUpdate()" class="panel">
+
+        <div *ngIf="!editMode">
+          <button class="primary" (click)="openEdit()">✏️ Update Post</button>
+        </div>
+
+        <div *ngIf="editMode" class="edit-card">
+
+          <h3>Edit Post</h3>
+
+          <img *ngIf="post.imageUrl" [src]="post.imageUrl" class="edit-image" />
+
+          <button class="generate"
+                  (click)="generateImage()"
+                  [disabled]="generatingImage">
+
+            <span *ngIf="!generatingImage">🎨 Generate New Image</span>
+            <span *ngIf="generatingImage">Generating...</span>
+          </button>
+
+          <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+          <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+          <label>Title</label>
+          <input [(ngModel)]="post.title" />
+
+          <label>Content</label>
+          <textarea [(ngModel)]="post.content"></textarea>
+
+          <label>Hashtags</label>
+          <input [(ngModel)]="post.hashtags" />
+
+          <button class="primary"
+                  (click)="updatePost()"
+                  [disabled]="saving">
+
+            <span *ngIf="!saving">💾 Save</span>
+            <span *ngIf="saving">Saving...</span>
+          </button>
+
+        </div>
+
       </div>
-
-      <!-- FORM -->
-      <label>Title</label>
-      <input [(ngModel)]="post.title" />
-
-      <label>Content</label>
-      <textarea [(ngModel)]="post.content"></textarea>
-
-      <label>Hashtags</label>
-      <input [(ngModel)]="post.hashtags" />
-
-      <!-- SAVE -->
-      <button 
-        class="primary"
-        (click)="updatePost()" 
-        [disabled]="saving">
-
-        <span *ngIf="!saving">💾 Save</span>
-        <span *ngIf="saving">Saving...</span>
-
-      </button>
 
     </div>
 
   </div>
-
-</div>
-
 </div>
