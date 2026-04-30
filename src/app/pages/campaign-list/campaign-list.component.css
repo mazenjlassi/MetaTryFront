@@ -1,0 +1,234 @@
+.campaigns-page {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.campaigns-page h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e2f3e;
+  margin-bottom: 28px;
+  letter-spacing: -0.02em;
+  position: relative;
+  display: inline-block;
+}
+
+.campaigns-page h2:after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60%;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 3px;
+}
+
+/* Loading state */
+.campaigns-page > div:first-of-type {
+  background: #ffffff;
+  padding: 40px;
+  text-align: center;
+  border-radius: 20px;
+  color: #64748b;
+  font-weight: 500;
+  border: 1px solid #e9edf2;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Error state */
+.campaigns-page > div:nth-of-type(2) {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-weight: 500;
+  border-left: 4px solid #dc2626;
+  margin-bottom: 20px;
+}
+
+/* Empty state */
+.campaigns-page > div:nth-of-type(3) {
+  background: #ffffff;
+  padding: 60px 40px;
+  text-align: center;
+  border-radius: 20px;
+  color: #64748b;
+  font-size: 1rem;
+  border: 2px dashed #cbd5e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.campaign-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.campaign-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e9edf2;
+  position: relative;
+  overflow: hidden;
+}
+
+.campaign-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.campaign-card:hover::before {
+  transform: scaleX(1);
+}
+
+.campaign-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
+  border-color: #d0d9e8;
+}
+
+.campaign-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e2f3e;
+  margin-bottom: 12px;
+  transition: color 0.2s;
+}
+
+.campaign-card:hover h3 {
+  color: #3b82f6;
+}
+
+.campaign-card p {
+  color: #5a6e8a;
+  line-height: 1.5;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.meta {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #edf2f7;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #6c7f96;
+  font-weight: 500;
+}
+
+.meta span::before {
+  content: '📄';
+  font-size: 0.85rem;
+}
+
+/* Different icon based on post count (optional styling) */
+.meta span[data-count="0"]::before {
+  content: '📭';
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .campaigns-page {
+    padding: 20px;
+  }
+
+  .campaigns-page h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  .campaign-list {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .campaign-card {
+    padding: 18px;
+  }
+
+  .campaign-card h3 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .campaigns-page {
+    padding: 16px;
+  }
+
+  .campaigns-page h2 {
+    font-size: 1.3rem;
+  }
+
+  .campaign-list {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .campaign-card {
+    padding: 16px;
+  }
+
+  /* Adjust empty/loading states */
+  .campaigns-page > div:first-of-type,
+  .campaigns-page > div:nth-of-type(3) {
+    padding: 40px 20px;
+  }
+}
+
+/* Hover effect for interactive elements */
+.campaign-card:active {
+  transform: translateY(-2px);
+  transition: transform 0.1s;
+}
+
+/* Subtle animation for cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.campaign-card {
+  animation: fadeInUp 0.4s ease-out backwards;
+}
+
+.campaign-card:nth-child(1) { animation-delay: 0.05s; }
+.campaign-card:nth-child(2) { animation-delay: 0.1s; }
+.campaign-card:nth-child(3) { animation-delay: 0.15s; }
+.campaign-card:nth-child(4) { animation-delay: 0.2s; }
+.campaign-card:nth-child(5) { animation-delay: 0.25s; }
+.campaign-card:nth-child(6) { animation-delay: 0.3s; }

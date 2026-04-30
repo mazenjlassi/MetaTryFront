@@ -29,4 +29,12 @@ deletePost(id: number) {
     responseType: 'text'
   });
 }
+
+getAll() {
+    return this.http.get<any[]>(this.apiUrl + '/campaigns');
+  }
+
+  getById(id: number) {
+    return this.http.get<any>(`${this.apiUrl}/campaigns/${id}`);
+  }
 }

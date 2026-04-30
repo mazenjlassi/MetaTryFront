@@ -58,10 +58,7 @@
         <div *ngFor="let comment of comments" class="comment-card">
 
           <div class="comment-header">
-            <span class="author">
-              {{ comment.authorName || 'Unknown' }}
-            </span>
-
+           
             <span class="sentiment"
                   [ngClass]="getSentimentClass(comment.sentiment)">
               {{ comment.sentiment }}

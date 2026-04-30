@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PostService } from '../../../services/post.service';
-import { CommentService } from '../../../services/comment.service'; // 🔥 NEW
+import { CommentService } from '../../../services/comment.service';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -22,14 +22,13 @@ export class PostDetailsComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
 
-  // 🔥 COMMENTS
   comments: any[] = [];
   loadingComments = false;
 
   constructor(
     private route: ActivatedRoute,
     private service: PostService,
-    private commentService: CommentService, // 🔥 NEW
+    private commentService: CommentService,
     private location: Location
   ) {}
 
@@ -44,8 +43,10 @@ export class PostDetailsComponent implements OnInit {
           this.post = res;
           this.loading = false;
 
-          // 🔥 LOAD COMMENTS
-          this.loadComments(postId);
+          // Only load comments if published
+          if (this.post.status === 'PUBLISHED') {
+            this.loadComments(postId);
+          }
         },
         error: () => {
           this.errorMessage = 'Failed to load post';
@@ -71,28 +72,33 @@ export class PostDetailsComponent implements OnInit {
     });
   }
 
+  filterSentiment(sentiment: string) {
+    if (!this.post?.id) return;
+
+    this.loadingComments = true;
+
+    this.commentService
+      .getByPostAndSentiment(this.post.id, sentiment)
+      .subscribe({
+        next: (res) => {
+          this.comments = res;
+          this.loadingComments = false;
+        },
+        error: () => {
+          this.loadingComments = false;
+        }
+      });
+  }
+
+  resetComments() {
+    if (!this.post?.id) return;
+    this.loadComments(this.post.id);
+  }
+
   getSentimentClass(sentiment: string): string {
     if (sentiment === 'POSITIVE') return 'positive';
     if (sentiment === 'NEGATIVE') return 'negative';
     return 'neutral';
-  }
-
-  filterSentiment(sentiment: string) {
-    this.loadingComments = true;
-
-    this.commentService.getByPostAndSentiment(this.post.id, sentiment).subscribe({
-      next: (res) => {
-        this.comments = res;
-        this.loadingComments = false;
-      },
-      error: () => {
-        this.loadingComments = false;
-      }
-    });
-  }
-
-  resetComments() {
-    this.loadComments(this.post.id);
   }
 
   // ================= POST =================
@@ -120,13 +126,13 @@ export class PostDetailsComponent implements OnInit {
 
     this.service.updatePost(this.post.id, payload).subscribe({
       next: () => {
-        this.successMessage = 'Post updated successfully ✅';
+        this.successMessage = 'Post updated successfully';
         this.editMode = false;
         this.saving = false;
       },
       error: (err) => {
         this.saving = false;
-        this.errorMessage = err?.error?.message || 'Update failed ❌';
+        this.errorMessage = err?.error?.message || 'Update failed';
       }
     });
   }
@@ -142,11 +148,11 @@ export class PostDetailsComponent implements OnInit {
       next: (res: any) => {
         this.post.imageUrl = res.imageUrl;
         this.generatingImage = false;
-        this.successMessage = 'New image generated 🎨';
+        this.successMessage = 'Image generated successfully';
       },
       error: () => {
         this.generatingImage = false;
-        this.errorMessage = 'Image generation failed ❌';
+        this.errorMessage = 'Image generation failed';
       }
     });
   }

@@ -1,0 +1,32 @@
+<div class="campaigns-page">
+
+  <h2>Campaigns</h2>
+
+  <div *ngIf="loading">Loading...</div>
+
+  <div *ngIf="error">{{ error }}</div>
+
+  <div *ngIf="!loading && campaigns.length === 0">
+    No campaigns found
+  </div>
+
+  <div class="campaign-list">
+
+    <div *ngFor="let c of campaigns" class="campaign-card"
+         [routerLink]="['/campaigns', c.id]">
+
+      <h3>{{ c.name }}</h3>
+
+      <p *ngIf="c.topic">
+        {{ c.topic }}
+      </p>
+
+      <div class="meta">
+        <span>Posts: {{ c.postCount || 0 }}</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
