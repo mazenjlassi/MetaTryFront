@@ -5,6 +5,7 @@ import { CampaignsComponent } from './pages/campaigns/campaigns.component';
 import { PostsComponent } from './pages/posts/posts.component';
 import { PostDetailsComponent } from './pages/posts/post-details/post-details.component';
 import { CampaignListComponent } from './pages/campaign-list/campaign-list.component';
+import { CampaignDetailsComponent } from './pages/campaign-list/campaign-details/campaign-details.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -13,5 +14,6 @@ export const routes: Routes = [
     { path: 'posts', component: PostsComponent },
     {path: 'posts/:id', component: PostDetailsComponent} ,
     {path:'campaign-list', component: CampaignListComponent},
+    {path: 'campaigns/:id', component: CampaignDetailsComponent },
     {path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 ];

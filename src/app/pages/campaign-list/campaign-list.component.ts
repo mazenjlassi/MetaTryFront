@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CampaignService } from '../../services/campaign.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-campaign-list',
@@ -16,7 +16,10 @@ export class CampaignListComponent implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private campaignService: CampaignService) {}
+  constructor(
+    private campaignService: CampaignService,
+    private router: Router // ✅ ADD THIS
+  ) {}
 
   ngOnInit(): void {
     this.campaignService.getAll().subscribe({
@@ -29,5 +32,10 @@ export class CampaignListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  openCampaign(event: Event, id: number) {
+    event.stopPropagation(); // 🚫 prevent card click
+    this.router.navigate(['/campaigns', id]);
   }
 }

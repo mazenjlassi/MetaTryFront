@@ -12,7 +12,8 @@ import Chart from 'chart.js/auto';
   selector: 'app-platform-chart',
   standalone: true,
   imports: [CommonModule],
-  template: `<canvas #chartCanvas></canvas>`
+  templateUrl: './platform-chart.component.html',
+  styleUrls: ['./platform-chart.component.css']
 })
 export class PlatformChartComponent implements AfterViewInit {
 
@@ -26,61 +27,69 @@ export class PlatformChartComponent implements AfterViewInit {
   }
 
   loadData() {
-  this.postService.getPostStats().subscribe(stats => {
+    this.postService.getPostStats().subscribe(stats => {
 
-    console.log(stats); // 👈 keep this for debug
+      console.log(stats); // debug
 
-    const data = [
-      stats.facebookPosts,
-      stats.instagramPosts,
-      stats.linkedinPosts
-    ];
+      const data = [
+        stats.facebookPosts,
+        stats.instagramPosts,
+        stats.linkedinPosts
+      ];
 
-    this.createChart(data);
-  });
-}
-
-  createChart(data: number[]) {
-
-    this.chart = new Chart(this.chartRef.nativeElement, {
-      type: 'bar',
-      data: {
-        labels: ['Facebook', 'Instagram', 'LinkedIn'],
-        datasets: [
-          {
-            label: 'Published Posts',
-            data: data,
-            backgroundColor: [
-              '#1877F2', // Facebook
-              '#E1306C', // Instagram
-              '#0A66C2'  // LinkedIn
-            ],
-            borderRadius: 8
-          }
-        ]
-      },
-      options: {
-        indexAxis: 'y', 
-        responsive: true,
-        maintainAspectRatio: false,
-
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-
-        scales: {
-          x: {
-            ticks: { color: '#ccc' },
-            grid: { color: '#ffffff' }
-          },
-          y: {
-            ticks: { color: '#ccc' },
-            grid: { display: false }
-          }
-        }
-      }
+      this.createChart(data);
     });
   }
+createChart(data: number[]) {
+
+  if (this.chart) {
+    this.chart.destroy();
+  }
+
+  this.chart = new Chart(this.chartRef.nativeElement, {
+    type: 'bar',
+    data: {
+      labels: ['Facebook', 'Instagram', 'LinkedIn'],
+      datasets: [
+        {
+          label: 'Posts Published',
+          data: data,
+          backgroundColor: [
+            '#1877F2',
+            '#E1306C',
+            '#0A66C2'
+          ],
+          borderRadius: 8
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context: any) {
+              return `${context.raw} posts published`;
+            }
+          }
+        }
+      },
+
+      scales: {
+        x: {
+          ticks: { color: '#ccc' },
+          grid: { color: '#333' }
+        },
+        y: {
+          ticks: { color: '#ccc' },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
 }

@@ -1,0 +1,93 @@
+<div class="campaign-details" *ngIf="!loading">
+
+  <!-- HEADER -->
+  <div class="header">
+    <button class="back-btn" (click)="goBack()">← Back</button>
+
+    <div>
+      <h1>{{ campaign?.name }}</h1>
+      <p>{{ campaign?.topic }}</p>
+      <span>{{ campaign?.postCount }} posts</span>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="content">
+
+    <!-- LEFT: POSTS -->
+    <div class="posts-section">
+      <h2>Posts</h2>
+
+      <div *ngIf="posts.length === 0">
+        No posts yet
+      </div>
+
+      <div *ngFor="let post of posts"
+           class="post-card"
+           (click)="openPost(post.id)">
+
+        <h3>{{ post.title }}</h3>
+
+        <div class="meta">
+          <span>{{ post.platform }}</span>
+          <span class="status" [ngClass]="post.status">
+            {{ post.status }}
+          </span>
+        </div>
+
+        <div class="metrics">
+          <span>👍 {{ post.likes }}</span>
+          <span>💬 {{ post.commentsCount }}</span>
+          <span>🔁 {{ post.shares }}</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: INSIGHTS -->
+    <div class="insights-section" *ngIf="insights">
+
+      <div class="insights-header">
+        <h2>Insights</h2>
+        <button class="refresh-btn" (click)="reloadInsights()">
+          🔄 Refresh
+        </button>
+      </div>
+
+      <!-- SENTIMENT -->
+      <div class="sentiment"
+           [ngClass]="insights.overallSentiment">
+        {{ insights.overallSentiment }}
+      </div>
+
+      <!-- SUMMARY -->
+      <p class="summary">
+        {{ insights.summary }}
+      </p>
+
+      <!-- 🔥 ADVICE -->
+      <div class="advice" *ngIf="insights.advice">
+        <h3>Advice</h3>
+        <p>{{ insights.advice }}</p>
+      </div>
+
+      <!-- 🔥 IDEAS -->
+      <div class="ideas" *ngIf="insights.ideas?.length">
+        <h3>Ideas</h3>
+
+        <ul>
+          <li *ngFor="let idea of insights.ideas.slice(0,3)">
+            {{ idea }}
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div *ngIf="loading" class="loading">
+  Loading...
+</div>

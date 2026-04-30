@@ -10,6 +10,8 @@ export class PostService {
 
   constructor(private http: HttpClient) {}
 
+  // ================= DASHBOARD =================
+
   getLatestPosts(limit: number = 15) {
     return this.http.get<any[]>(
       `${this.api}/latestPublished?limit=${limit}`
@@ -23,37 +25,51 @@ export class PostService {
   }
 
   getPostStats() {
-  return this.http.get<any>('http://localhost:8081/posts/stats');
-}
+    return this.http.get<any>(`${this.api}/stats`);
+  }
 
-getDrafts() {
-  return this.http.get('http://localhost:8081/posts/drafts');
-}
+  // ================= FILTERS =================
 
-getScheduled() {
-  return this.http.get('http://localhost:8081/posts/scheduled');
-}
+  getDrafts() {
+    return this.http.get<any[]>(`${this.api}/drafts`);
+  }
 
-getPublished() {
-  return this.http.get('http://localhost:8081/posts/published');
-}
+  getScheduled() {
+    return this.http.get<any[]>(`${this.api}/scheduled`);
+  }
 
-publishPost(postId: number) {
-  return this.http.post(`http://localhost:8081/publish/${postId}`, {});
-}
+  getPublished() {
+    return this.http.get<any[]>(`${this.api}/published`);
+  }
 
-getPermanent() {
-  return this.http.get('http://localhost:8081/posts/permanent');
-}
-getById(id: number) {
-  return this.http.get(`http://localhost:8081/posts/${id}`);
-}
-updatePost(id: number, data: any) {
-  return this.http.put(`http://localhost:8081/posts/${id}`, data, {
-    responseType: 'text'
-  });
-}
-generateImage(id: number) {
-  return this.http.post(`http://localhost:8081/posts/${id}/generate-image`, {});
-}
+  getPermanent() {
+    return this.http.get<any[]>(`${this.api}/permanent`);
+  }
+
+  // ================= CAMPAIGN (NEW) =================
+
+  // 🔥 Needed for Campaign Details page
+  getByCampaign(campaignId: number) {
+    return this.http.get<any[]>(`http://localhost:8081/campaigns/${campaignId}/posts`);
+  }
+
+  // ================= POST ACTIONS =================
+
+  publishPost(postId: number) {
+    return this.http.post(`http://localhost:8081/publish/${postId}`, {});
+  }
+
+  getById(id: number) {
+    return this.http.get<any>(`${this.api}/${id}`);
+  }
+
+  updatePost(id: number, data: any) {
+    return this.http.put(`${this.api}/${id}`, data, {
+      responseType: 'text'
+    });
+  }
+
+  generateImage(id: number) {
+    return this.http.post(`${this.api}/${id}/generate-image`, {});
+  }
 }

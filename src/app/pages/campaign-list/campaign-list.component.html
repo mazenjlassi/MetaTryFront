@@ -12,7 +12,8 @@
 
   <div class="campaign-list">
 
-    <div *ngFor="let c of campaigns" class="campaign-card"
+    <div *ngFor="let c of campaigns"
+         class="campaign-card"
          [routerLink]="['/campaigns', c.id]">
 
       <h3>{{ c.name }}</h3>
@@ -24,6 +25,12 @@
       <div class="meta">
         <span>Posts: {{ c.postCount || 0 }}</span>
       </div>
+
+      <!-- 🔥 NEW BUTTON -->
+      <button class="open-btn"
+              (click)="openCampaign($event, c.id)">
+        Open
+      </button>
 
     </div>
 

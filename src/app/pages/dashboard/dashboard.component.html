@@ -1,27 +1,80 @@
 <div class="dashboard">
 
-  <!-- LEFT -->
-  <div class="card">
-    <h3>🔥 Top Posts</h3>
-    <div class="posts-list">
-      <app-post-card *ngFor="let post of posts" [post]="post"></app-post-card>
+  <!-- 🔥 STATS -->
+  <div class="stats" *ngIf="stats">
+
+    <div class="card">
+      <h4>Total Posts</h4>
+      <p>{{ stats.totalPosts }}</p>
     </div>
+
+    <div class="card">
+      <h4>Published</h4>
+      <p>{{ stats.publishedPosts }}</p>
+    </div>
+
+    <div class="card">
+      <h4>Draft</h4>
+      <p>{{ stats.draftPosts }}</p>
+    </div>
+
+    <div class="card">
+      <h4>Approved</h4>
+      <p>{{ stats.approvedPosts }}</p>
+    </div>
+
   </div>
 
-  <!-- RIGHT -->
-  <div class="card chart-card">
-    <h3>📊 Performance</h3>
-    <div class="chart-wrapper">
+  <!-- 📊 CHARTS -->
+  <div class="charts">
+
+    <div class="chart-box">
+      <h3>Post Engagement</h3>
       <app-posts-chart></app-posts-chart>
     </div>
-  </div>
 
-  <!-- NEW CARD -->
-  <div class="card chart-card">
-    <h3>🌍 Platform Distribution</h3>
-    <div class="chart-wrapper">
+    <div class="chart-box">
+      <h3>Platform Distribution</h3>
       <app-platform-chart></app-platform-chart>
     </div>
+
+  </div>
+
+  <!-- 🏆 TOP POSTS + CAMPAIGNS -->
+  <div class="main-grid">
+
+    <!-- TOP POSTS -->
+    <div class="posts">
+      <h2>Top Posts</h2>
+
+      <div *ngIf="loading">Loading...</div>
+
+      <div *ngFor="let post of posts; let i = index" class="post-wrapper">
+
+        <div *ngIf="i === 0" class="badge">🔥 Best</div>
+
+        <app-post-card [post]="post"></app-post-card>
+
+      </div>
+    </div>
+
+    <!-- CAMPAIGNS -->
+    <div class="campaigns">
+      <h2>Recent Campaigns</h2>
+
+      <div *ngFor="let c of campaigns" class="campaign-card">
+        <h4>{{ c.name }}</h4>
+        <p>{{ c.topic }}</p>
+        <span>{{ c.postCount }} posts</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 🧠 AI INSIGHT -->
+  <div class="insight-box">
+    <h2>AI Insight</h2>
+    <p>{{ getQuickInsight() }}</p>
   </div>
 
 </div>
