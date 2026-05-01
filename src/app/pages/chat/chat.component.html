@@ -1,0 +1,70 @@
+<div class="chat-page">
+
+  <!-- LEFT: CONVERSATIONS -->
+  <div class="sidebar">
+
+    <button class="new-btn" (click)="createConversation()">
+      + New Chat
+    </button>
+
+    <div class="conversation-list">
+      <div
+        *ngFor="let c of conversations"
+        class="conversation-item"
+        [class.active]="c.id === selectedConversationId"
+        (click)="selectConversation(c.id)"
+      >
+        {{ c.title || 'Untitled' }}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CENTER: CHAT -->
+  <div class="chat-container">
+
+    <div class="messages">
+
+      <div
+        *ngFor="let m of messages"
+        [class.user]="m.role === 'USER'"
+        [class.ai]="m.role === 'AI'"
+        class="message"
+      >
+        {{ m.content }}
+      </div>
+
+      <div *ngIf="loading" class="message ai">
+        typing...
+      </div>
+
+    </div>
+
+    <!-- INPUT -->
+    <div class="input-box">
+      <input
+        [(ngModel)]="newMessage"
+        placeholder="Ask something..."
+        (keyup.enter)="sendMessage()"
+      />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: CONCLUSION -->
+  <div class="insight-panel">
+
+    <h3>Conclusion</h3>
+
+    <button (click)="generateConclusion()">
+      Generate
+    </button>
+
+    <p *ngIf="conclusion">
+      {{ conclusion }}
+    </p>
+
+  </div>
+
+</div>
