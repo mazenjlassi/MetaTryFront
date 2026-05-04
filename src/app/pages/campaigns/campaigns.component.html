@@ -2,171 +2,113 @@
 
   <!-- FORM -->
   <div class="card form-card">
-    <h2>🚀 Create Campaign</h2>
+    <h2>Create Campaign</h2>
 
     <input [(ngModel)]="name" placeholder="Campaign name" />
     <input [(ngModel)]="topic" placeholder="Topic" />
-    <input type="number" [(ngModel)]="postNumber" min="1" />
 
-    <button (click)="generate()">
-      {{ loading ? 'Generating...' : 'Generate Campaign' }}
+    <input type="number"
+           [(ngModel)]="postNumber"
+           min="1"
+           [disabled]="showManual" />
+
+    <div class="actions-row">
+      <button (click)="generate()">
+        {{ loading ? 'Generating...' : 'Generate with AI' }}
+      </button>
+      <button class="secondary" (click)="createManualCampaign()">
+        Create Manual Campaign
+      </button>
+    </div>
+  </div>
+
+  <!-- MANUAL BUTTON -->
+  <div class="manual-toggle">
+    <button (click)="showManual = !showManual" [disabled]="!campaignId">
+      {{ showManual ? 'Cancel' : '+ Manual Post' }}
+    </button>
+    <span *ngIf="!campaignId" class="warning-tag">
+      Create a campaign first
+    </span>
+  </div>
+
+  <!-- MANUAL FORM -->
+  <div *ngIf="showManual && campaignId" class="card manual-card">
+    <h3>Create Manual Post</h3>
+
+    <label>Platform</label>
+    <select [(ngModel)]="manualPost.platform">
+      <option value="LINKEDIN">LinkedIn</option>
+      <option value="INSTAGRAM">Instagram</option>
+      <option value="FACEBOOK">Facebook</option>
+    </select>
+
+    <label>Title</label>
+    <input [(ngModel)]="manualPost.title" placeholder="Enter title" />
+
+    <label>Content</label>
+    <textarea [(ngModel)]="manualPost.content" placeholder="Write your post..."></textarea>
+
+    <label>Hashtags</label>
+    <input [(ngModel)]="manualPost.hashtags" placeholder="AI,Marketing" />
+
+    <label>Scheduled At</label>
+    <input type="datetime-local" [(ngModel)]="manualPost.scheduledAt" />
+    <small class="hint">Leave empty to keep as draft</small>
+
+    <label class="checkbox">
+      <input type="checkbox" [(ngModel)]="manualPost.permanent" />
+      Permanent Post
+    </label>
+
+    <label>Upload Image</label>
+    <input type="file" (change)="onFileSelected($event)" />
+
+    <div *ngIf="previewUrl" class="image-preview">
+      <img [src]="previewUrl" />
+    </div>
+
+    <div *ngIf="manualPost.platform === 'INSTAGRAM' && !previewUrl" class="warning-msg">
+      ⚠ Instagram requires an image
+    </div>
+
+    <button (click)="createManualPost()" [disabled]="manualPost.platform === 'INSTAGRAM' && !previewUrl">
+      Create Post
     </button>
   </div>
 
-  <!-- POSTS -->
+  <!-- POSTS LIST -->
   <div class="posts-section" *ngIf="posts.length > 0">
-
     <div class="card post-card" *ngFor="let post of posts">
 
-      <!-- TOP BAR -->
       <div class="top-actions">
-        <span class="platform">{{ post.platform }}</span>
-
-        <button class="delete-btn" (click)="delete(post)">
-          🗑
-        </button>
+        <span class="platform-badge">{{ post.platform }}</span>
+        <button class="delete-btn" (click)="delete(post)">Delete</button>
       </div>
 
-      <!-- 🔥 SOCIAL PREVIEW -->
-      <div class="preview">
-
-        <!-- INSTAGRAM -->
-        <div *ngIf="post.platform === 'INSTAGRAM'" class="instagram">
-
-          <img *ngIf="post.image?.imageUrl"
-               [src]="post.image.imageUrl"
-               class="preview-image" />
-
-          <div class="caption">
-            <strong>{{ post.title }}</strong>
-            <p>{{ post.content }}</p>
-
-            <!-- optional link display -->
-            <span *ngIf="post.link" class="post-link">
-              🔗 {{ post.link }}
-            </span>
-          </div>
-
-        </div>
-
-        <!-- LINKEDIN -->
-        <div *ngIf="post.platform === 'LINKEDIN'" class="linkedin">
-
-          <div class="header">
-            <strong>3LM Solutions</strong>
-            <span>• now</span>
-          </div>
-
-          <p>{{ post.content }}</p>
-
-          <!-- LINK -->
-          <a *ngIf="post.link"
-             [href]="post.link"
-             target="_blank"
-             class="post-link">
-            🔗 {{ post.link }}
-          </a>
-
-        </div>
-
-        <!-- FACEBOOK -->
-        <div *ngIf="post.platform === 'FACEBOOK'" class="facebook">
-
-          <div class="header">
-            <strong>3LM Solutions</strong>
-            <span>• now</span>
-          </div>
-
-          <p>{{ post.content }}</p>
-
-          <!-- LINK -->
-          <a *ngIf="post.link"
-             [href]="post.link"
-             target="_blank"
-             class="post-link">
-            🔗 {{ post.link }}
-          </a>
-
-          <img *ngIf="post.image?.imageUrl"
-               [src]="post.image.imageUrl"
-               class="preview-image" />
-
-        </div>
-
+      <div class="post-preview">
+        <p>{{ post.content }}</p>
+        <img *ngIf="post.image?.imageUrl" [src]="post.image.imageUrl" class="post-img" />
       </div>
 
-      <!-- ✏️ EDIT SECTION -->
-      <div class="edit">
-
-        <input [(ngModel)]="post.title" placeholder="Title" />
-
+      <div class="edit-fields">
+        <input [(ngModel)]="post.title" />
         <textarea [(ngModel)]="post.content"></textarea>
-
-        <input [(ngModel)]="post.hashtags" placeholder="Hashtags" />
-
-        <!-- 🔥 NEW LINK FIELD -->
-        <input [(ngModel)]="post.link" placeholder="Link (optional)" />
-
       </div>
 
-      <!-- ACTIONS -->
-      <div class="actions">
-
-        <label>
-          <input type="checkbox" [(ngModel)]="post.approved" />
-          Approved
-        </label>
-
-        <label>
-          <input type="checkbox" [(ngModel)]="post.permanent" />
-          Permanent
-        </label>
-
+      <div class="post-meta">
+        <span>Status: {{ post.status }}</span>
+        <span *ngIf="post.scheduledAt">Scheduled: {{ post.scheduledAt | date:'short' }}</span>
       </div>
 
-      <!-- DATE -->
-      <input type="datetime-local" [(ngModel)]="post.scheduledAt" />
-
-      <!-- IMAGE -->
-      <div class="image-section">
-
-        <button (click)="generateImage(post)">
-          🖼 Generate Image
+      <div class="action-buttons">
+        <button class="save-btn" (click)="save(post)">Save</button>
+        <button class="publish-btn" (click)="publishNow(post)" [disabled]="!post.approved">
+          Publish
         </button>
-
-        <span *ngIf="post.platform === 'INSTAGRAM' && !post.image?.imageUrl"
-              class="warning">
-          ⚠ Instagram requires image
-        </span>
-
-      </div>
-
-      <!-- SAVE -->
-      <div class="save-section">
-
-        <button (click)="save(post)"
-                [disabled]="!canSave(post) || savingPostId === post.id">
-          💾 Save
-        </button>
-        <button  (click)="publishNow(post)" 
-                  [disabled]="publishingPostId === post.id || !post.approved">
-                   <span *ngIf="publishingPostId === post.id">Publishing...</span>
-                  <span *ngIf="publishingPostId !== post.id">🚀 Publish Now</span>
-        </button>
-      
-
-        <span *ngIf="savingPostId === post.id" class="saving">
-          Saving...
-        </span>
-
-        <span *ngIf="savedPostId === post.id" class="saved">
-          ✓ Saved
-        </span>
-
       </div>
 
     </div>
-
   </div>
 
 </div>

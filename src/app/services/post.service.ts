@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class PostService {
 
   private api = 'http://localhost:8081/posts';
+  private campaignApi = 'http://localhost:8081/campaigns';
 
   constructor(private http: HttpClient) {}
 
@@ -46,17 +47,21 @@ export class PostService {
     return this.http.get<any[]>(`${this.api}/permanent`);
   }
 
-  // ================= CAMPAIGN (NEW) =================
+  // ================= CAMPAIGN =================
 
-  // 🔥 Needed for Campaign Details page
   getByCampaign(campaignId: number) {
-    return this.http.get<any[]>(`http://localhost:8081/campaigns/${campaignId}/posts`);
+    return this.http.get<any[]>(
+      `${this.campaignApi}/${campaignId}/posts`
+    );
   }
 
   // ================= POST ACTIONS =================
 
   publishPost(postId: number) {
-    return this.http.post(`http://localhost:8081/publish/${postId}`, {});
+    return this.http.post(
+      `http://localhost:8081/publish/${postId}`,
+      {}
+    );
   }
 
   getById(id: number) {
@@ -69,7 +74,36 @@ export class PostService {
     });
   }
 
+  deletePost(id: number) {
+    return this.http.delete(`${this.api}/${id}`, {
+      responseType: 'text'
+    });
+  }
+
   generateImage(id: number) {
     return this.http.post(`${this.api}/${id}/generate-image`, {});
+  }
+
+  // ================= ✅ CREATE POST WITH IMAGE =================
+
+  createPostWithImage(campaignId: number, data: any, image?: File) {
+
+    const formData = new FormData();
+
+    // JSON part
+    formData.append(
+      'data',
+      new Blob([JSON.stringify(data)], { type: 'application/json' })
+    );
+
+    // optional image
+    if (image) {
+      formData.append('image', image);
+    }
+
+    return this.http.post(
+      `${this.campaignApi}/${campaignId}/posts/with-image`,
+      formData
+    );
   }
 }

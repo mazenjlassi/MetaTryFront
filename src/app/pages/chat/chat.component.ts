@@ -69,9 +69,17 @@ export class ChatComponent implements OnInit {
 
     this.chatService
       .sendMessage(this.selectedConversationId, this.newMessage)
-      .subscribe(res => {
-        this.messages.push(res);
-        this.loading = false;
+      .subscribe({
+        next: (res) => {
+          this.messages.push(res);
+          this.loading = false;
+
+          // 🔥 THIS IS THE FIX
+          this.loadConversations(); // refresh titles
+        },
+        error: () => {
+          this.loading = false;
+        }
       });
 
     this.newMessage = '';
