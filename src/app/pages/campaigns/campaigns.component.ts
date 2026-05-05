@@ -14,6 +14,8 @@ import { PostService } from '../../services/post.service';
 })
 export class CampaignsComponent {
 
+  // ================= CAMPAIGN =================
+
   name = '';
   topic = '';
   postNumber = 1;
@@ -23,10 +25,19 @@ export class CampaignsComponent {
   showManual = false;
   loading = false;
 
+  // ================= POSTS =================
+
   posts: any[] = [];
+
+  savingPostId: number | null = null;
+  publishingPostId: number | null = null;
+
+  // ================= IMAGE =================
 
   previewUrl: string | null = null;
   selectedFile!: File;
+
+  // ================= MANUAL POST =================
 
   manualPost: any = {
     title: '',
@@ -34,7 +45,8 @@ export class CampaignsComponent {
     hashtags: '',
     platform: 'LINKEDIN',
     scheduledAt: null,
-    permanent: false
+    permanent: false,
+    approved: true
   };
 
   constructor(
@@ -42,7 +54,7 @@ export class CampaignsComponent {
     private postService: PostService
   ) {}
 
-  // ================= CAMPAIGN =================
+  // ================= CREATE MANUAL CAMPAIGN =================
 
   createManualCampaign() {
 
@@ -58,25 +70,34 @@ export class CampaignsComponent {
       topic: this.topic
     }).subscribe({
       next: (res: any) => {
+
         this.campaignId = res.id;
+
         this.loading = false;
+
         this.showManual = true;
       },
-      error: () => this.loading = false
+
+      error: () => {
+        this.loading = false;
+      }
     });
   }
 
   // ================= FILE =================
 
   onFileSelected(event: any) {
+
     this.selectedFile = event.target.files[0];
 
     if (this.selectedFile) {
+
       this.previewUrl = URL.createObjectURL(this.selectedFile);
+
     }
   }
 
-  // ================= CREATE POST =================
+  // ================= CREATE MANUAL POST =================
 
   createManualPost() {
 
@@ -86,14 +107,20 @@ export class CampaignsComponent {
 
     const data = {
       ...this.manualPost,
+
       scheduledAt: this.manualPost.scheduledAt
         ? new Date(this.manualPost.scheduledAt).toISOString()
         : null
     };
 
     this.postService
-      .createPostWithImage(this.campaignId, data, this.selectedFile)
+      .createPostWithImage(
+        this.campaignId,
+        data,
+        this.selectedFile
+      )
       .subscribe({
+
         next: (res: any) => {
 
           this.posts.push(res);
@@ -105,15 +132,21 @@ export class CampaignsComponent {
             hashtags: '',
             platform: 'LINKEDIN',
             scheduledAt: null,
-            permanent: false
+            permanent: false,
+            approved: true
           };
 
           this.previewUrl = null;
+
           this.loading = false;
         },
+
         error: (err) => {
+
           console.error(err);
+
           this.loading = false;
+
           alert('Failed to create post');
         }
       });
@@ -126,8 +159,13 @@ export class CampaignsComponent {
     if (!confirm('Delete this post?')) return;
 
     this.postService.deletePost(post.id).subscribe({
+
       next: () => {
-        this.posts = this.posts.filter(p => p.id !== post.id);
+
+        this.posts = this.posts.filter(
+          p => p.id !== post.id
+        );
+
       }
     });
   }
@@ -136,9 +174,38 @@ export class CampaignsComponent {
 
   save(post: any) {
 
-    this.postService.updatePost(post.id, post).subscribe({
+    this.savingPostId = post.id;
+
+    this.postService.updatePost(post.id, {
+
+      title: post.title,
+      content: post.content,
+      hashtags: post.hashtags,
+
+      platform: post.platform,
+
+      scheduledAt: post.scheduledAt,
+
+      permanent: post.permanent,
+
+      approved: post.approved,
+
+      link: post.link
+
+    }).subscribe({
+
       next: () => {
+
+        this.savingPostId = null;
+
         alert('Saved!');
+      },
+
+      error: () => {
+
+        this.savingPostId = null;
+
+        alert('Failed to save');
       }
     });
   }
@@ -147,31 +214,57 @@ export class CampaignsComponent {
 
   publishNow(post: any) {
 
+    this.publishingPostId = post.id;
+
     this.postService.publishPost(post.id).subscribe({
+
       next: () => {
+
         post.status = 'PUBLISHED';
+
         post.publishedAt = new Date();
+
+        this.publishingPostId = null;
+
         alert('Published!');
+      },
+
+      error: () => {
+
+        this.publishingPostId = null;
+
+        alert('Failed to publish');
       }
     });
   }
 
-  // ================= AI =================
+  // ================= AI GENERATION =================
 
   generate() {
 
     this.loading = true;
 
     this.campaignService.generateCampaign({
+
       name: this.name,
+
       topic: this.topic,
+
       postNumber: this.postNumber
+
     }).subscribe({
+
       next: (res: any) => {
+
         this.posts = res;
+
         this.loading = false;
       },
-      error: () => this.loading = false
+
+      error: () => {
+
+        this.loading = false;
+      }
     });
   }
 }

@@ -8,12 +8,12 @@
   min-height: 100vh;
 }
 
-/* FORM CARD */
+/* ========== FORM CARD ========== */
 .form-card {
   width: 30%;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
   background: #ffffff;
   padding: 28px;
   border-radius: 24px;
@@ -27,11 +27,19 @@
 .form-card h2 {
   font-size: 1.5rem;
   color: #1e2f3e;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font-weight: 700;
 }
 
-/* Actions row */
+.form-card label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+
+/* ========== ACTIONS ROW ========== */
 .actions-row {
   display: flex;
   gap: 12px;
@@ -48,13 +56,14 @@
   border: 1px solid #e2e8f0;
 }
 
-.actions-row .secondary:hover {
+.actions-row .secondary:hover:not(:disabled) {
   background: #e2e8f0;
   color: #1e2f3e;
   transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Manual Toggle */
+/* ========== MANUAL TOGGLE ========== */
 .manual-toggle {
   margin-top: -16px;
   display: flex;
@@ -72,7 +81,7 @@
   background: #059669;
 }
 
-.warning-tag {
+.manual-toggle .warning {
   color: #dc2626;
   font-size: 0.8rem;
   font-weight: 500;
@@ -82,7 +91,7 @@
   display: inline-block;
 }
 
-/* Manual Card */
+/* ========== MANUAL CARD ========== */
 .manual-card {
   background: #ffffff;
   padding: 28px;
@@ -131,7 +140,7 @@
   accent-color: #3b82f6;
 }
 
-/* Posts Section */
+/* ========== POSTS SECTION ========== */
 .posts-section {
   width: 70%;
   display: flex;
@@ -139,6 +148,7 @@
   gap: 24px;
 }
 
+/* ========== POST CARD ========== */
 .post-card {
   background: #ffffff;
   padding: 24px;
@@ -156,7 +166,7 @@
   border-color: #dce5ef;
 }
 
-/* Inputs */
+/* ========== INPUTS ========== */
 input, textarea, select {
   background: #f9fbfd;
   border: 1px solid #e2e8f0;
@@ -167,6 +177,7 @@ input, textarea, select {
   transition: all 0.2s;
   font-family: inherit;
   width: 100%;
+  box-sizing: border-box;
 }
 
 input:focus, textarea:focus, select:focus {
@@ -201,33 +212,44 @@ input[type="file"]:hover {
   border-color: #3b82f6;
 }
 
-/* Image preview */
-.image-preview {
+/* ========== PREVIEW ========== */
+.preview {
   background: #f8fafc;
   padding: 16px;
   border-radius: 16px;
   border: 1px solid #edf2f7;
-  text-align: center;
 }
 
-.image-preview img {
+.preview img {
   max-width: 100%;
   max-height: 200px;
   object-fit: cover;
   border-radius: 12px;
 }
 
-.post-img {
+.preview h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e2f3e;
+  margin: 0 0 8px 0;
+}
+
+.preview p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.preview-image {
   max-width: 100%;
   max-height: 200px;
   object-fit: cover;
   border-radius: 12px;
-  margin-top: 12px;
-  border: 1px solid #e2e8f0;
 }
 
-/* Warning messages */
-.warning-msg {
+/* ========== WARNING ========== */
+.warning {
   color: #dc2626;
   font-size: 0.8rem;
   font-weight: 500;
@@ -237,7 +259,7 @@ input[type="file"]:hover {
   border-left: 3px solid #dc2626;
 }
 
-/* Buttons */
+/* ========== BUTTONS ========== */
 button {
   background: #3b82f6;
   border: none;
@@ -264,17 +286,25 @@ button:disabled {
   background: #cbd5e1;
   cursor: not-allowed;
   opacity: 0.6;
+  transform: none;
+  box-shadow: none;
 }
 
-/* Delete button */
-.delete-btn {
+/* ========== TOP ACTIONS ========== */
+.top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-actions button {
   background: transparent;
   color: #dc2626;
   border: 1px solid #fecaca;
   padding: 6px 14px;
 }
 
-.delete-btn:hover {
+.top-actions button:hover {
   background: #dc2626;
   color: white;
   border-color: #dc2626;
@@ -282,8 +312,7 @@ button:disabled {
   box-shadow: none;
 }
 
-/* Platform badge */
-.platform-badge {
+.platform {
   font-size: 0.75rem;
   font-weight: 600;
   padding: 4px 12px;
@@ -293,37 +322,22 @@ button:disabled {
   letter-spacing: 0.3px;
 }
 
-/* Top actions */
-.top-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* Post preview */
-.post-preview {
-  background: #f8fafc;
-  padding: 16px;
-  border-radius: 16px;
-  border: 1px solid #edf2f7;
-}
-
-.post-preview p {
-  margin: 0 0 12px 0;
-  color: #334155;
-  line-height: 1.5;
-  font-size: 0.9rem;
-}
-
-/* Edit fields */
-.edit-fields {
+/* ========== EDIT SECTION ========== */
+.edit {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* Post meta */
-.post-meta {
+.edit label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: -4px;
+}
+
+/* ========== META ========== */
+.meta {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
@@ -334,13 +348,29 @@ button:disabled {
   color: #6c7f96;
 }
 
-.post-meta span:first-child {
-  color: #3b82f6;
+.status {
+  padding: 4px 10px;
+  border-radius: 20px;
   font-weight: 600;
 }
 
-/* Action buttons */
-.action-buttons {
+.status.published {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status.draft {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.scheduled {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* ========== SAVE SECTION ========== */
+.save-section {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -348,19 +378,15 @@ button:disabled {
   margin-top: 8px;
 }
 
-.save-btn {
+.save-section button:first-child {
   background: #8b5cf6;
 }
 
-.save-btn:hover:not(:disabled) {
+.save-section button:first-child:hover:not(:disabled) {
   background: #7c3aed;
 }
 
-.publish-btn {
-  background: #3b82f6;
-}
-
-/* Animations */
+/* ========== ANIMATIONS ========== */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -372,7 +398,7 @@ button:disabled {
   }
 }
 
-/* Responsive */
+/* ========== RESPONSIVE ========== */
 @media (max-width: 1024px) {
   .campaign-page {
     flex-direction: column;
@@ -429,7 +455,7 @@ button:disabled {
     padding: 16px;
   }
   
-  .action-buttons button {
+  .save-section button {
     flex: 1;
   }
   
@@ -441,9 +467,13 @@ button:disabled {
   .manual-card h3 {
     font-size: 1.1rem;
   }
+  
+  .meta {
+    gap: 12px;
+  }
 }
 
-/* Scrollbar */
+/* ========== SCROLLBAR ========== */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

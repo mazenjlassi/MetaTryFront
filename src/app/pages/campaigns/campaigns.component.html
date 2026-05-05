@@ -1,114 +1,327 @@
 <div class="campaign-page">
 
-  <!-- FORM -->
+  <!-- ================= HEADER ================= -->
   <div class="card form-card">
+
     <h2>Create Campaign</h2>
 
-    <input [(ngModel)]="name" placeholder="Campaign name" />
-    <input [(ngModel)]="topic" placeholder="Topic" />
+    <!-- NAME -->
+    <label>Campaign Name</label>
+
+    <input [(ngModel)]="name"
+           placeholder="Enter campaign name" />
+
+    <!-- TOPIC -->
+    <label>Topic</label>
+
+    <input [(ngModel)]="topic"
+           placeholder="AI, Marketing, Business..." />
+
+    <!-- POSTS NUMBER -->
+    <label>AI Posts Number</label>
 
     <input type="number"
            [(ngModel)]="postNumber"
            min="1"
            [disabled]="showManual" />
 
+    <!-- ACTIONS -->
     <div class="actions-row">
-      <button (click)="generate()">
+
+      <button (click)="generate()"
+              [disabled]="loading">
+
         {{ loading ? 'Generating...' : 'Generate with AI' }}
+
       </button>
-      <button class="secondary" (click)="createManualCampaign()">
+
+      <button class="secondary"
+              (click)="createManualCampaign()"
+              [disabled]="loading">
+
         Create Manual Campaign
+
       </button>
+
     </div>
+
   </div>
 
-  <!-- MANUAL BUTTON -->
+  <!-- ================= MANUAL TOGGLE ================= -->
   <div class="manual-toggle">
-    <button (click)="showManual = !showManual" [disabled]="!campaignId">
+
+    <button (click)="showManual = !showManual"
+            [disabled]="!campaignId">
+
       {{ showManual ? 'Cancel' : '+ Manual Post' }}
+
     </button>
-    <span *ngIf="!campaignId" class="warning-tag">
+
+    <span *ngIf="!campaignId"
+          class="warning">
+
       Create a campaign first
+
     </span>
+
   </div>
 
-  <!-- MANUAL FORM -->
-  <div *ngIf="showManual && campaignId" class="card manual-card">
+  <!-- ================= MANUAL FORM ================= -->
+  <div *ngIf="showManual && campaignId"
+       class="card manual-card">
+
     <h3>Create Manual Post</h3>
 
+    <!-- PLATFORM -->
     <label>Platform</label>
+
     <select [(ngModel)]="manualPost.platform">
-      <option value="LINKEDIN">LinkedIn</option>
-      <option value="INSTAGRAM">Instagram</option>
-      <option value="FACEBOOK">Facebook</option>
+
+      <option value="LINKEDIN">
+        LinkedIn
+      </option>
+
+      <option value="INSTAGRAM">
+        Instagram
+      </option>
+
+      <option value="FACEBOOK">
+        Facebook
+      </option>
+
     </select>
 
+    <!-- TITLE -->
     <label>Title</label>
-    <input [(ngModel)]="manualPost.title" placeholder="Enter title" />
 
+    <input [(ngModel)]="manualPost.title"
+           placeholder="Enter title" />
+
+    <!-- CONTENT -->
     <label>Content</label>
-    <textarea [(ngModel)]="manualPost.content" placeholder="Write your post..."></textarea>
 
+    <textarea [(ngModel)]="manualPost.content"
+              placeholder="Write your post..."></textarea>
+
+    <!-- HASHTAGS -->
     <label>Hashtags</label>
-    <input [(ngModel)]="manualPost.hashtags" placeholder="AI,Marketing" />
 
+    <input [(ngModel)]="manualPost.hashtags"
+           placeholder="#AI #Marketing" />
+
+    <!-- SCHEDULE -->
     <label>Scheduled At</label>
-    <input type="datetime-local" [(ngModel)]="manualPost.scheduledAt" />
-    <small class="hint">Leave empty to keep as draft</small>
 
+    <input type="datetime-local"
+           [(ngModel)]="manualPost.scheduledAt" />
+
+    <!-- PERMANENT -->
     <label class="checkbox">
-      <input type="checkbox" [(ngModel)]="manualPost.permanent" />
+
+      <input type="checkbox"
+             [(ngModel)]="manualPost.permanent" />
+
       Permanent Post
+
     </label>
 
+    <!-- APPROVED -->
+    <label class="checkbox">
+
+      <input type="checkbox"
+             [(ngModel)]="manualPost.approved" />
+
+      Approved
+
+    </label>
+
+    <!-- IMAGE -->
     <label>Upload Image</label>
-    <input type="file" (change)="onFileSelected($event)" />
 
-    <div *ngIf="previewUrl" class="image-preview">
+    <input type="file"
+           (change)="onFileSelected($event)" />
+
+    <!-- PREVIEW -->
+    <div *ngIf="previewUrl"
+         class="preview">
+
       <img [src]="previewUrl" />
+
     </div>
 
-    <div *ngIf="manualPost.platform === 'INSTAGRAM' && !previewUrl" class="warning-msg">
-      ⚠ Instagram requires an image
+    <!-- WARNING -->
+    <div *ngIf="manualPost.platform === 'INSTAGRAM' && !previewUrl"
+         class="warning">
+
+      Instagram requires an image
+
     </div>
 
-    <button (click)="createManualPost()" [disabled]="manualPost.platform === 'INSTAGRAM' && !previewUrl">
-      Create Post
+    <!-- SUBMIT -->
+    <button (click)="createManualPost()"
+            [disabled]="loading || (manualPost.platform === 'INSTAGRAM' && !previewUrl)">
+
+      {{ loading ? 'Saving...' : 'Create Post' }}
+
     </button>
+
   </div>
 
-  <!-- POSTS LIST -->
-  <div class="posts-section" *ngIf="posts.length > 0">
-    <div class="card post-card" *ngFor="let post of posts">
+  <!-- ================= POSTS ================= -->
+  <div class="posts-section"
+       *ngIf="posts.length > 0">
 
+    <div class="card post-card"
+         *ngFor="let post of posts">
+
+      <!-- TOP -->
       <div class="top-actions">
-        <span class="platform-badge">{{ post.platform }}</span>
-        <button class="delete-btn" (click)="delete(post)">Delete</button>
-      </div>
 
-      <div class="post-preview">
-        <p>{{ post.content }}</p>
-        <img *ngIf="post.image?.imageUrl" [src]="post.image.imageUrl" class="post-img" />
-      </div>
+        <span class="platform">
+          {{ post.platform }}
+        </span>
 
-      <div class="edit-fields">
-        <input [(ngModel)]="post.title" />
-        <textarea [(ngModel)]="post.content"></textarea>
-      </div>
-
-      <div class="post-meta">
-        <span>Status: {{ post.status }}</span>
-        <span *ngIf="post.scheduledAt">Scheduled: {{ post.scheduledAt | date:'short' }}</span>
-      </div>
-
-      <div class="action-buttons">
-        <button class="save-btn" (click)="save(post)">Save</button>
-        <button class="publish-btn" (click)="publishNow(post)" [disabled]="!post.approved">
-          Publish
+        <button (click)="delete(post)">
+          Delete
         </button>
+
+      </div>
+
+      <!-- IMAGE -->
+      <div *ngIf="post.image?.imageUrl"
+           class="preview">
+
+        <img [src]="post.image.imageUrl"
+             class="preview-image" />
+
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="preview">
+
+        <h4>
+          {{ post.title }}
+        </h4>
+
+        <p>
+          {{ post.content }}
+        </p>
+
+      </div>
+
+      <!-- ================= EDIT ================= -->
+      <div class="edit">
+
+        <!-- TITLE -->
+        <label>Title</label>
+
+        <input [(ngModel)]="post.title" />
+
+        <!-- CONTENT -->
+        <label>Content</label>
+
+        <textarea [(ngModel)]="post.content"></textarea>
+
+        <!-- HASHTAGS -->
+        <label>Hashtags</label>
+
+        <input [(ngModel)]="post.hashtags" />
+
+        <!-- PLATFORM -->
+        <label>Platform</label>
+
+        <select [(ngModel)]="post.platform">
+
+          <option value="LINKEDIN">
+            LinkedIn
+          </option>
+
+          <option value="INSTAGRAM">
+            Instagram
+          </option>
+
+          <option value="FACEBOOK">
+            Facebook
+          </option>
+
+        </select>
+
+        <!-- SCHEDULE -->
+        <label>Scheduled At</label>
+
+        <input type="datetime-local"
+               [(ngModel)]="post.scheduledAt" />
+
+        <!-- PERMANENT -->
+        <label class="checkbox">
+
+          <input type="checkbox"
+                 [(ngModel)]="post.permanent" />
+
+          Permanent Post
+
+        </label>
+
+        <!-- APPROVED -->
+        <label class="checkbox">
+
+          <input type="checkbox"
+                 [(ngModel)]="post.approved" />
+
+          Approved
+
+        </label>
+
+      </div>
+
+      <!-- META -->
+      <div class="meta">
+
+        <span class="status"
+              [ngClass]="post.status?.toLowerCase()">
+
+          {{ post.status }}
+
+        </span>
+
+        <span *ngIf="post.scheduledAt">
+
+          Scheduled:
+          {{ post.scheduledAt | date:'short' }}
+
+        </span>
+
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="save-section">
+
+        <button (click)="save(post)"
+                [disabled]="savingPostId === post.id">
+
+          {{
+            savingPostId === post.id
+            ? 'Saving...'
+            : 'Save'
+          }}
+
+        </button>
+
+        <button (click)="publishNow(post)"
+                [disabled]="!post.approved || publishingPostId === post.id">
+
+          {{
+            publishingPostId === post.id
+            ? 'Publishing...'
+            : 'Publish'
+          }}
+
+        </button>
+
       </div>
 
     </div>
+
   </div>
 
 </div>
