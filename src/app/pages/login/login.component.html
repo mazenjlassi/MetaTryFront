@@ -1,11 +1,31 @@
-<h2>Login</h2>
+<div class="login-card">
+  <h2>Welcome Back</h2>
 
-<input [(ngModel)]="username" placeholder="Username" />
-<br><br>
+  <div class="form-group">
+    <label>Username</label>
+    <input
+      [(ngModel)]="username"
+      placeholder="Enter your username"
+      type="text"
+    />
+  </div>
 
-<input [(ngModel)]="password" type="password" placeholder="Password" />
-<br><br>
+  <div class="form-group">
+    <label>Password</label>
+    <input
+      [(ngModel)]="password"
+      placeholder="Enter your password"
+      type="password"
+    />
+  </div>
 
-<button (click)="login()">Login</button>
+  <button class="login-btn" (click)="login()">
+    Sign In
+  </button>
 
-<p style="color:red" *ngIf="error">{{ error }}</p>
+  <a href="#" class="forgot-password">Forgot password?</a>
+
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+</div>

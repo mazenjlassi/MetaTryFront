@@ -1,104 +1,159 @@
 :host {
   display: block;
-  max-width: 400px;
-  margin: 80px auto;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: var(--color-background);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
   padding: 40px;
-  background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e9edf2;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
   text-align: center;
 }
 
-h2 {
-  font-size: 1.8rem;
+.login-card h2 {
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #1e2f3e;
-  margin-bottom: 28px;
-  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  margin-bottom: 32px;
+  letter-spacing: -0.02em;
 }
 
-input {
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.form-group input {
   width: 100%;
-  padding: 12px 16px;
-  background: #f9fbfd;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  padding: 14px 16px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
-  color: #1a2c3e;
-  transition: all 0.2s ease;
-  font-family: inherit;
+  color: var(--color-text-primary);
+  transition: all var(--transition-fast);
   box-sizing: border-box;
 }
 
-input:focus {
+.form-group input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  background: #ffffff;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(15, 82, 214, 0.1);
+  background: var(--color-card);
 }
 
-input::placeholder {
-  color: #94a3b8;
+.form-group input::placeholder {
+  color: var(--color-text-secondary);
 }
 
-button {
+.login-btn {
   width: 100%;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  padding: 14px 24px;
+  background: var(--color-primary);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   margin-top: 8px;
 }
 
-button:hover {
+.login-btn:hover:not(:disabled) {
+  background: var(--color-primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(59, 130, 246, 0.3);
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 6px 16px rgba(15, 82, 214, 0.25);
 }
 
-button:active {
+.login-btn:active:not(:disabled) {
   transform: translateY(0);
 }
 
-p {
+.login-btn:disabled {
+  background: var(--color-border);
+  cursor: not-allowed;
+}
+
+.error-message {
   margin-top: 20px;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 12px 16px;
+  background: #FEE2E2;
+  color: var(--color-error);
+  border-radius: var(--radius-sm);
   font-size: 0.85rem;
   font-weight: 500;
+  border-left: 3px solid var(--color-error);
+  text-align: left;
 }
 
-p[style*="color:red"] {
-  background: #fee2e2;
-  color: #dc2626 !important;
-  border-left: 3px solid #dc2626;
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
 }
 
-/* Responsive */
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.divider span {
+  padding: 0 16px;
+}
+
+.forgot-password {
+  display: block;
+  margin-top: 16px;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.forgot-password:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
 @media (max-width: 480px) {
-  :host {
-    margin: 40px 16px;
+  .login-card {
     padding: 28px 20px;
   }
-  
-  h2 {
+
+  .login-card h2 {
     font-size: 1.5rem;
     margin-bottom: 24px;
   }
-  
-  input {
-    padding: 10px 14px;
-    font-size: 0.9rem;
+
+  .form-group input {
+    padding: 12px 14px;
   }
-  
-  button {
-    padding: 10px 16px;
-    font-size: 0.9rem;
+
+  .login-btn {
+    padding: 12px 20px;
+    font-size: 0.95rem;
   }
 }
