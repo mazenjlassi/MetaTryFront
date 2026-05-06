@@ -1,0 +1,24 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .app-layout {
+    flex-direction: row;
+  }
+
+  .main-content {
+    flex: 1;
+    margin-left: 260px;
+    padding-bottom: 60px;
+  }
+}
