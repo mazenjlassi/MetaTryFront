@@ -14,6 +14,14 @@ import { PostService } from '../../services/post.service';
 })
 export class CampaignsComponent {
 
+  // ================= FORM STATE =================
+
+  showForm = false;
+
+  // ================= FILTERS =================
+
+  sortBy = 'newest';
+
   // ================= CAMPAIGN =================
 
   name = '';
@@ -168,6 +176,12 @@ export class CampaignsComponent {
 
       }
     });
+  }
+
+  // ================= EDIT POST =================
+
+  editPost(post: any) {
+    post.editing = !post.editing;
   }
 
   // ================= SAVE =================

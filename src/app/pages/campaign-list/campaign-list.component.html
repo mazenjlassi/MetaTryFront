@@ -1,38 +1,129 @@
-<div class="campaigns-page">
+<div class="campaigns-page" role="main" aria-label="Campaigns list">
 
-  <h2>Campaigns</h2>
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1>All Campaigns</h1>
+      <p class="subtitle">Manage and track your content campaigns</p>
+    </div>
+    <button class="btn-primary" routerLink="/campaigns" aria-label="Create new campaign">
+      + New Campaign
+    </button>
+  </header>
 
-  <div *ngIf="loading">Loading...</div>
-
-  <div *ngIf="error">{{ error }}</div>
-
-  <div *ngIf="!loading && campaigns.length === 0">
-    No campaigns found
+  <!-- FILTERS -->
+  <div class="filters-section">
+    <div class="search-box">
+      <span class="search-icon">&#128269;</span>
+      <input 
+        type="text" 
+        placeholder="Search campaigns..." 
+        [(ngModel)]="searchQuery"
+        aria-label="Search campaigns"
+        class="search-input"
+      />
+    </div>
+    
+    <div class="filter-group">
+      <select [(ngModel)]="statusFilter" aria-label="Filter by status" class="filter-select">
+        <option value="">All Status</option>
+        <option value="active">Active</option>
+        <option value="completed">Completed</option>
+        <option value="draft">Draft</option>
+      </select>
+      
+      <select [(ngModel)]="sortBy" aria-label="Sort by" class="filter-select">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="name">Name A-Z</option>
+      </select>
+    </div>
   </div>
 
-  <div class="campaign-list">
+  <!-- LOADING STATE -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading campaigns...</p>
+  </div>
 
-    <div *ngFor="let c of campaigns"
-         class="campaign-card"
-         [routerLink]="['/campaigns', c.id]">
+  <!-- ERROR STATE -->
+  <div *ngIf="error" class="error-state">
+    <span>&#9888;</span>
+    <p>{{ error }}</p>
+  </div>
 
-      <h3>{{ c.name }}</h3>
+  <!-- EMPTY STATE -->
+  <div *ngIf="!loading && !error && filteredCampaigns.length === 0" class="empty-state">
+    <div class="empty-icon">&#128193;</div>
+    <h3>No campaigns yet</h3>
+    <p>Create your first campaign to get started</p>
+    <button class="btn-primary" routerLink="/campaigns">
+      + Create Campaign
+    </button>
+  </div>
 
-      <p *ngIf="c.topic">
-        {{ c.topic }}
-      </p>
-
-      <div class="meta">
-        <span>Posts: {{ c.postCount || 0 }}</span>
+  <!-- CAMPAIGNS GRID -->
+  <div *ngIf="!loading && filteredCampaigns.length > 0" class="campaigns-grid">
+    
+    <article 
+      *ngFor="let c of filteredCampaigns; let i = index"
+      class="campaign-card"
+      [style.animation-delay.ms]="i * 50"
+    >
+      <!-- Card Header -->
+      <div class="card-header">
+        <div class="campaign-info">
+          <h3>{{ c.name }}</h3>
+          <p class="topic" *ngIf="c.topic">{{ c.topic }}</p>
+        </div>
+        <span class="status-badge" [attr.data-status]="c.status?.toLowerCase() || 'draft'">
+          <span class="status-dot"></span>
+          {{ c.status || 'Draft' }}
+        </span>
       </div>
 
-      <!-- 🔥 NEW BUTTON -->
-      <button class="open-btn"
-              (click)="openCampaign($event, c.id)">
-        Open
-      </button>
+      <!-- Stats -->
+      <div class="campaign-stats">
+        <div class="stat">
+          <span class="stat-value">{{ c.postCount || 0 }}</span>
+          <span class="stat-label">Posts</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">${{ c.budget || 0 }}</span>
+          <span class="stat-label">Budget</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">{{ c.createdAt | date:'MMM d' }}</span>
+          <span class="stat-label">Created</span>
+        </div>
+      </div>
 
-    </div>
+      <!-- Progress Bar -->
+      <div class="progress-section" *ngIf="c.postCount">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="(c.publishedCount || 0) / c.postCount * 100"></div>
+        </div>
+        <span class="progress-text">{{ c.publishedCount || 0 }} / {{ c.postCount }} published</span>
+      </div>
+
+      <!-- Actions -->
+      <div class="card-actions">
+        <button 
+          class="action-btn"
+          [routerLink]="['/campaigns', c.id]"
+          aria-label="View campaign"
+        >
+          &#128065; View
+        </button>
+        <button 
+          class="action-btn primary"
+          (click)="openCampaign($event, c.id)"
+          aria-label="Open campaign"
+        >
+          &#8599; Open
+        </button>
+      </div>
+    </article>
 
   </div>
 

@@ -24,6 +24,7 @@ export class PostDetailsComponent implements OnInit {
 
   comments: any[] = [];
   loadingComments = false;
+  sentimentFilter = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -73,21 +74,26 @@ export class PostDetailsComponent implements OnInit {
   }
 
   filterSentiment(sentiment: string) {
+    this.sentimentFilter = sentiment;
     if (!this.post?.id) return;
-
+    
     this.loadingComments = true;
 
-    this.commentService
-      .getByPostAndSentiment(this.post.id, sentiment)
-      .subscribe({
-        next: (res) => {
-          this.comments = res;
-          this.loadingComments = false;
-        },
-        error: () => {
-          this.loadingComments = false;
-        }
-      });
+    if (sentiment) {
+      this.commentService
+        .getByPostAndSentiment(this.post.id, sentiment)
+        .subscribe({
+          next: (res) => {
+            this.comments = res;
+            this.loadingComments = false;
+          },
+          error: () => {
+            this.loadingComments = false;
+          }
+        });
+    } else {
+      this.loadComments(this.post.id);
+    }
   }
 
   resetComments() {

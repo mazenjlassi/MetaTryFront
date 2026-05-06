@@ -1,78 +1,93 @@
 <div class="posts-page">
+  <h1>Posts</h1>
 
-  <!-- TABS -->
-  <div class="tabs">
-    <button [class.active]="activeTab === 'drafts'" (click)="setTab('drafts')">
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input 
+      type="text" 
+      placeholder="Search posts..." 
+      [(ngModel)]="searchQuery"
+      aria-label="Search posts"
+    />
+  </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs" role="tablist">
+    <button [class.active]="activeTab === 'drafts'" (click)="setTab('drafts')" role="tab" [attr.aria-selected]="activeTab === 'drafts'">
       Drafts
     </button>
-
-    <button [class.active]="activeTab === 'scheduled'" (click)="setTab('scheduled')">
+    <button [class.active]="activeTab === 'scheduled'" (click)="setTab('scheduled')" role="tab" [attr.aria-selected]="activeTab === 'scheduled'">
       Scheduled
     </button>
-    <button [class.active]="activeTab === 'permanent'" (click)="setTab('permanent')">
-       Permanent
+    <button [class.active]="activeTab === 'permanent'" (click)="setTab('permanent')" role="tab" [attr.aria-selected]="activeTab === 'permanent'">
+      Permanent
     </button>
-
-    <button [class.active]="activeTab === 'published'" (click)="setTab('published')">
+    <button [class.active]="activeTab === 'published'" (click)="setTab('published')" role="tab" [attr.aria-selected]="activeTab === 'published'">
       Published
     </button>
+  </nav>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading" role="status" aria-live="polite">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+    <span>Loading posts...</span>
   </div>
 
-  <!-- LOADING -->
-  <div *ngIf="loading" class="loading">
-    Loading...
-  </div>
+  <!-- Posts Grid -->
+  <main class="posts-grid" role="list">
 
-  <!-- POSTS -->
-  <div class="posts-grid">
+    <!-- Post Card -->
+    <article class="post-card" *ngFor="let post of filteredPosts" role="listitem">
 
-    <div class="post-card" *ngFor="let post of posts">
+      <!-- Card Header -->
+      <header class="card-header">
+        <span class="platform-badge">{{ post.platform }}</span>
+      </header>
 
-      <!-- PLATFORM -->
-      <div class="top">
-        <span>{{ post.platform }}</span>
+      <!-- Preview Image -->
+      <figure class="preview">
+        <img *ngIf="post.image?.imageUrl" 
+             [src]="post.image.imageUrl" 
+             [alt]="'Post image for ' + post.platform"
+             loading="lazy" />
+        <div *ngIf="!post.image?.imageUrl" class="placeholder" aria-label="No image">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        </div>
+      </figure>
+
+      <!-- Content -->
+      <div class="content">
+        <p>{{ post.content }}</p>
+        
+        <!-- Meta Information -->
+        <div class="meta">
+          <span *ngIf="post.scheduledAt" class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            {{ post.scheduledAt }}
+          </span>
+          <span *ngIf="post.approved" class="meta-item approved">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Approved
+          </span>
+        </div>
       </div>
 
-      <!-- PREVIEW -->
-      <div class="preview">
-
-        <!-- Instagram -->
-        <div *ngIf="post.platform === 'INSTAGRAM'">
-          <img *ngIf="post.image?.imageUrl" [src]="post.image.imageUrl" />
-          <p>{{ post.content }}</p>
-        </div>
-
-        <!-- LinkedIn -->
-        <div *ngIf="post.platform === 'LINKEDIN'" class="light">
-          <p>{{ post.content }}</p>
-        </div>
-
-        <!-- Facebook -->
-        <div *ngIf="post.platform === 'FACEBOOK'" class="light">
-          <p>{{ post.content }}</p>
-          <img *ngIf="post.image?.imageUrl" [src]="post.image.imageUrl" />
-        </div>
-
-      </div>
-
-      <!-- INFO -->
-      <div class="meta">
-        <span *ngIf="post.created">📅 {{ post.scheduledAt }}</span>
-        <span *ngIf="post.approved">✔ Approved</span>
-      </div>
-      <!-- ACTIONS (FIXED) -->
+      <!-- Actions -->
       <div class="actions">
-
-        <button (click)="viewDetails(post.id)">
+        <button (click)="viewDetails(post.id)" aria-label="View details for this post">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           View Details
         </button>
-
-        
-
       </div>
 
+    </article>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && posts.length === 0" class="empty" role="status">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      <p>No posts found</p>
     </div>
 
-  </div>
+  </main>
 
 </div>

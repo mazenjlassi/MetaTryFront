@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LucideAngularModule, Search, MoreHorizontal, Paperclip, Smile, Send, CheckCircle, FileText, Plus, MessageSquare } from 'lucide-angular';
 import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
@@ -19,7 +20,20 @@ export class ChatComponent implements OnInit {
   newMessage = '';
 
   conclusion = '';
+  generatingConclusion = false;
   loading = false;
+
+  icons = {
+    search: Search,
+    moreHorizontal: MoreHorizontal,
+    paperclip: Paperclip,
+    smile: Smile,
+    send: Send,
+    checkCircle: CheckCircle,
+    fileText: FileText,
+    plus: Plus,
+    messageSquare: MessageSquare
+  };
 
   constructor(private chatService: ChatService) {}
 
@@ -74,8 +88,7 @@ export class ChatComponent implements OnInit {
           this.messages.push(res);
           this.loading = false;
 
-          // 🔥 THIS IS THE FIX
-          this.loadConversations(); // refresh titles
+          this.loadConversations();
         },
         error: () => {
           this.loading = false;
@@ -85,11 +98,26 @@ export class ChatComponent implements OnInit {
     this.newMessage = '';
   }
 
+  getSelectedConversation() {
+    return this.conversations.find(c => c.id === this.selectedConversationId);
+  }
+
   generateConclusion() {
+    if (this.generatingConclusion) return;
+    
+    this.generatingConclusion = true;
+    this.conclusion = '';
+
     this.chatService
       .generateConclusion(this.selectedConversationId)
-      .subscribe(res => {
-        this.conclusion = res;
+      .subscribe({
+        next: (res) => {
+          this.conclusion = res;
+          this.generatingConclusion = false;
+        },
+        error: () => {
+          this.generatingConclusion = false;
+        }
       });
   }
 }

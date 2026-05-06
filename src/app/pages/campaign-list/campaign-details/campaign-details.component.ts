@@ -78,7 +78,19 @@ export class CampaignDetailsComponent implements OnInit {
     this.router.navigate(['/posts', id]);
   }
 
+  editPost(post: any) {
+    post.editing = !post.editing;
+  }
+
+  publishPost(post: any) {
+    this.postService.updatePost(post.id, { status: 'PUBLISHED' }).subscribe({
+      next: () => {
+        post.status = 'PUBLISHED';
+      }
+    });
+  }
+
   goBack() {
-    this.router.navigate(['/campaign-list']); // ✅ FIXED route
+    this.router.navigate(['/campaign-list']);
   }
 }
