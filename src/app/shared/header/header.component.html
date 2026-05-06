@@ -1,13 +1,57 @@
-<header class="header">
-  <div class="logo">
-  <img src="/logo-3LMS.png" alt="Company Logo" />
-</div>
+<header class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <img src="/logo-3LMS.png" alt="Company Logo" />
+    </div>
+  </div>
 
-  <nav>
-    <a routerLink="/dashboard">Dashboard</a>
-    <a routerLink="/campaigns">Add Post</a>
-    <a routerLink="/chat">Chat Bot</a>
-    <a routerLink="/posts">Posts</a>
-    <a routerLink="/campaign-list">Campaign List</a>
+  <nav class="sidebar-nav">
+    <a routerLink="/dashboard" routerLinkActive="active">
+      <span class="nav-icon">📊</span>
+      Dashboard
+    </a>
+    <a routerLink="/campaigns" routerLinkActive="active">
+      <span class="nav-icon">✏️</span>
+      Add Post
+    </a>
+    <a routerLink="/chat" routerLinkActive="active">
+      <span class="nav-icon">💬</span>
+      Chat Bot
+    </a>
+    <a routerLink="/posts" routerLinkActive="active">
+      <span class="nav-icon">📝</span>
+      Posts
+    </a>
+    <a routerLink="/campaign-list" routerLinkActive="active">
+      <span class="nav-icon">📁</span>
+      Campaign List
+    </a>
   </nav>
+
+  <div class="sidebar-footer">
+    <div class="brand">
+      <span class="brand-name">MetaTry</span>
+      <span class="brand-version">v1.0</span>
+    </div>
+  </div>
 </header>
+
+<!-- Mobile header (visible only on small screens) -->
+<header class="mobile-header">
+  <div class="logo">
+    <img src="/logo-3LMS.png" alt="Company Logo" />
+  </div>
+  <button class="menu-toggle" (click)="toggleMenu()">
+    <span class="menu-icon">☰</span>
+  </button>
+</header>
+
+<!-- Mobile nav overlay -->
+<div class="mobile-nav-overlay" [class.open]="mobileMenuOpen" (click)="closeMenu()"></div>
+<nav class="mobile-nav" [class.open]="mobileMenuOpen">
+  <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
+  <a routerLink="/campaigns" routerLinkActive="active" (click)="closeMenu()">Add Post</a>
+  <a routerLink="/chat" routerLinkActive="active" (click)="closeMenu()">Chat Bot</a>
+  <a routerLink="/posts" routerLinkActive="active" (click)="closeMenu()">Posts</a>
+  <a routerLink="/campaign-list" routerLinkActive="active" (click)="closeMenu()">Campaign List</a>
+</nav>
