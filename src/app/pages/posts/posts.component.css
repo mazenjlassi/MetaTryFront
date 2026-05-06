@@ -1,8 +1,8 @@
 .posts-page {
-  padding: 28px 32px;
+  padding: var(--space-lg) var(--space-xl);
   max-width: 1400px;
   margin: 0 auto;
-  background: #f7f9fc;
+  background: var(--color-background);
   min-height: 100vh;
 }
 
@@ -10,9 +10,9 @@
 .tabs {
   display: flex;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: var(--space-xl);
   flex-wrap: wrap;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid var(--color-border);
   padding-bottom: 4px;
 }
 
@@ -20,26 +20,27 @@
   padding: 10px 24px;
   border: none;
   background: transparent;
-  color: #5a6e8a;
-  border-radius: 12px;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.25s ease;
   position: relative;
+  font-family: var(--font-family);
 }
 
 .tabs button:hover {
-  background: #ffffff;
-  color: #2c5f8a;
+  background: var(--color-card);
+  color: #2C5F8A;
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .tabs button.active {
-  background: #ffffff;
-  color: #3b82f6;
-  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.12);
+  background: var(--color-card);
+  color: var(--color-primary);
+  box-shadow: 0 2px 10px rgba(15, 82, 214, 0.12);
 }
 
 .tabs button.active::after {
@@ -50,7 +51,7 @@
   transform: translateX(-50%);
   width: 40%;
   height: 3px;
-  background: #3b82f6;
+  background: var(--color-primary);
   border-radius: 3px;
 }
 
@@ -58,24 +59,24 @@
 .posts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-  margin-top: 8px;
+  gap: var(--space-lg);
+  margin-top: var(--space-xs);
 }
 
 /* CARD */
 .post-card {
-  background: #ffffff;
+  background: var(--color-card);
   padding: 20px;
-  border-radius: 20px;
-  transition: all 0.3s ease;
-  border: 1px solid #e9edf2;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .post-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.12);
-  border-color: #d0d9e8;
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-border);
 }
 
 /* PLATFORM BADGE */
@@ -86,9 +87,9 @@
 .top span {
   display: inline-block;
   padding: 5px 14px;
-  background: #eef2ff;
-  color: #2c5f8a;
-  border-radius: 30px;
+  background: #EEF2FF;
+  color: #2C5F8A;
+  border-radius: var(--radius-full);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.3px;
@@ -101,33 +102,33 @@
 
 .preview img {
   width: 100%;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   margin-top: 10px;
-  border: 1px solid #edf2f7;
+  border: 1px solid var(--color-border);
   max-height: 220px;
   object-fit: cover;
 }
 
 .preview p {
-  color: #334155;
+  color: var(--color-text-secondary);
   line-height: 1.55;
   font-size: 0.9rem;
   margin: 8px 0;
 }
 
 .light {
-  background: #fafcff;
-  color: #1e293b;
+  background: var(--color-background);
+  color: var(--color-text-primary);
   padding: 12px;
-  border-radius: 14px;
-  border-left: 3px solid #3b82f6;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-primary);
 }
 
 /* META */
 .meta {
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid #edf2f7;
+  border-top: 1px solid var(--color-border);
   font-size: 0.75rem;
   display: flex;
   gap: 16px;
@@ -139,51 +140,52 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #6c7f96;
+  color: var(--color-text-secondary);
 }
 
 .meta span:last-child {
-  color: #10b981;
+  color: var(--color-success);
   font-weight: 500;
 }
 
 /* LOADING */
 .loading {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-lg);
   padding: 40px;
   text-align: center;
-  background: #ffffff;
-  border-radius: 20px;
-  color: #5a6e8a;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
   font-weight: 500;
-  border: 1px solid #e9edf2;
+  border: 1px solid var(--color-border);
 }
 
 /* ACTIONS */
 .actions {
-  margin-top: 16px;
+  margin-top: var(--space-md);
   display: flex;
   justify-content: flex-end;
 }
 
 /* BUTTON */
 .actions button {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
   border: none;
   padding: 8px 18px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
+  font-family: var(--font-family);
 }
 
 /* HOVER EFFECT */
 .actions button:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 4px 10px rgba(15, 82, 214, 0.25);
 }
 
 /* CLICK EFFECT */
@@ -194,34 +196,34 @@
 /* Responsive */
 @media (max-width: 768px) {
   .posts-page {
-    padding: 16px;
+    padding: var(--space-md);
   }
-  
+
   .posts-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: var(--space-md);
   }
-  
+
   .tabs button {
     padding: 8px 16px;
     font-size: 0.85rem;
   }
-  
+
   .post-card {
-    padding: 16px;
+    padding: var(--space-md);
   }
 }
 
 @media (max-width: 480px) {
   .tabs {
-    gap: 8px;
+    gap: var(--space-xs);
   }
-  
+
   .tabs button {
     padding: 6px 12px;
     font-size: 0.8rem;
   }
-  
+
   .meta {
     gap: 12px;
   }
