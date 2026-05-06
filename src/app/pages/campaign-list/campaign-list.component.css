@@ -1,15 +1,15 @@
 .campaigns-page {
-  padding: 32px;
+  padding: var(--space-xl);
   max-width: 1400px;
   margin: 0 auto;
-  background: #f8fafc;
+  background: var(--color-background);
   min-height: 100vh;
 }
 
 .campaigns-page h2 {
   font-size: 2rem;
   font-weight: 700;
-  color: #1e2f3e;
+  color: var(--color-text-primary);
   margin-bottom: 28px;
   letter-spacing: -0.02em;
   position: relative;
@@ -23,61 +23,61 @@
   left: 0;
   width: 60%;
   height: 3px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(90deg, var(--color-primary), #8B5CF6);
   border-radius: 3px;
 }
 
 /* Loading state */
 .campaigns-page > div:first-of-type {
-  background: #ffffff;
+  background: var(--color-card);
   padding: 40px;
   text-align: center;
-  border-radius: 20px;
-  color: #64748b;
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
   font-weight: 500;
-  border: 1px solid #e9edf2;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Error state */
 .campaigns-page > div:nth-of-type(2) {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #FEE2E2;
+  color: var(--color-error);
   padding: 16px 20px;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   font-weight: 500;
-  border-left: 4px solid #dc2626;
+  border-left: 4px solid var(--color-error);
   margin-bottom: 20px;
 }
 
 /* Empty state */
 .campaigns-page > div:nth-of-type(3) {
-  background: #ffffff;
+  background: var(--color-card);
   padding: 60px 40px;
   text-align: center;
-  border-radius: 20px;
-  color: #64748b;
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
   font-size: 1rem;
-  border: 2px dashed #cbd5e1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 2px dashed var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .campaign-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
-  margin-top: 8px;
+  gap: var(--space-lg);
+  margin-top: var(--space-xs);
 }
 
 .campaign-card {
   position: relative;
   padding: 24px;
-  border-radius: 20px;
-  background: #ffffff;
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  border: 1px solid #e9edf2;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
   overflow: hidden;
 }
 
@@ -88,9 +88,9 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(90deg, var(--color-primary), #8B5CF6);
   transform: scaleX(0);
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-normal);
 }
 
 .campaign-card:hover::before {
@@ -99,9 +99,9 @@
 
 .campaign-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
-  border-color: #d0d9e8;
-  background: #ffffff;
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-border);
+  background: var(--color-card);
 }
 
 .campaign-card:active {
@@ -112,21 +112,21 @@
 .campaign-card h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1e2f3e;
+  color: var(--color-text-primary);
   margin-bottom: 12px;
-  transition: color 0.2s;
+  transition: color var(--transition-fast);
   padding-right: 70px;
 }
 
 .campaign-card:hover h3 {
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .campaign-card p {
-  color: #5a6e8a;
+  color: var(--color-text-secondary);
   line-height: 1.5;
   font-size: 0.9rem;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-md);
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -135,9 +135,9 @@
 }
 
 .meta {
-  margin-top: 16px;
+  margin-top: var(--space-md);
   padding-top: 12px;
-  border-top: 1px solid #edf2f7;
+  border-top: 1px solid var(--color-border);
   font-size: 0.8rem;
   display: flex;
   align-items: center;
@@ -149,7 +149,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #6c7f96;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
@@ -165,21 +165,22 @@
   right: 20px;
   padding: 8px 16px;
   border: none;
-  border-radius: 10px;
-  background: #3b82f6;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
   color: white;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.8rem;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   z-index: 2;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-family);
 }
 
 .open-btn:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
   transform: scale(1.05);
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 8px rgba(15, 82, 214, 0.3);
 }
 
 .open-btn:active {
@@ -226,7 +227,7 @@
 
   .campaign-list {
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
+    gap: var(--space-md);
   }
 
   .campaign-card {
@@ -256,7 +257,7 @@
 
 @media (max-width: 480px) {
   .campaigns-page {
-    padding: 16px;
+    padding: var(--space-md);
   }
 
   .campaigns-page h2 {
@@ -269,7 +270,7 @@
   }
 
   .campaign-card {
-    padding: 16px;
+    padding: var(--space-md);
   }
 
   .campaign-card h3 {
