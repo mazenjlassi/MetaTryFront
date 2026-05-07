@@ -18,6 +18,8 @@ export class AuthService {
     }).pipe(
       tap(res => {
         localStorage.setItem('token', res.token);
+        localStorage.setItem('role', res.role);
+        localStorage.setItem('name', res.name);
       })
     );
   }
@@ -26,7 +28,29 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
+  getRole() {
+    return localStorage.getItem('role');
+  }
+
+  getName() {
+    return localStorage.getItem('name');
+  }
+
+  isAdmin(): boolean {
+    return this.getRole() === 'ADMIN';
+  }
+
+  isMarketing(): boolean {
+    return this.getRole() === 'MARKETING';
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getToken();
+  }
+
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('name');
   }
 }

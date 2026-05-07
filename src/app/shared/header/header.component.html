@@ -27,14 +27,31 @@
       <lucide-icon [img]="icons.folder" [size]="20"></lucide-icon>
       <span>Campaign List</span>
     </a>
+    <!-- Admin Only -->
+    <a *ngIf="isAdmin()" routerLink="/admin/users" routerLinkActive="active" aria-label="User Management">
+      <lucide-icon [img]="icons.users" [size]="20"></lucide-icon>
+      <span>User Management</span>
+    </a>
   </nav>
 
   <div class="sidebar-footer">
+    <!-- User Info -->
+    <div class="user-info">
+      <span class="user-name">{{ getUserName() }}</span>
+      <span class="user-role" *ngIf="isAdmin()">Admin</span>
+    </div>
+    
     <!-- Theme Toggle Button -->
     <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
       <lucide-icon *ngIf="!isDarkMode" [img]="icons.moon" [size]="18"></lucide-icon>
       <lucide-icon *ngIf="isDarkMode" [img]="icons.sun" [size]="18"></lucide-icon>
       <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
+    </button>
+    
+    <!-- Logout Button -->
+    <button class="logout-btn" (click)="logout()" aria-label="Logout">
+      <lucide-icon [img]="icons.logOut" [size]="18"></lucide-icon>
+      <span>Logout</span>
     </button>
     
     <div class="brand">
@@ -100,11 +117,28 @@
     <lucide-icon [img]="icons.folder" [size]="20"></lucide-icon>
     Campaign List
   </a>
+  <!-- Admin Only -->
+  <a *ngIf="isAdmin()" routerLink="/admin/users" routerLinkActive="active" (click)="closeMenu()">
+    <lucide-icon [img]="icons.users" [size]="20"></lucide-icon>
+    User Management
+  </a>
+  
+  <!-- User Info in Mobile -->
+  <div class="mobile-user-info">
+    <span>{{ getUserName() }}</span>
+    <span *ngIf="isAdmin()" class="mobile-role">Admin</span>
+  </div>
   
   <!-- Theme Toggle in Mobile -->
   <button class="theme-toggle-mobile-nav" (click)="toggleTheme(); closeMenu()">
     <lucide-icon *ngIf="!isDarkMode" [img]="icons.moon" [size]="20"></lucide-icon>
     <lucide-icon *ngIf="isDarkMode" [img]="icons.sun" [size]="20"></lucide-icon>
     {{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}
+  </button>
+  
+  <!-- Logout in Mobile -->
+  <button class="logout-btn-mobile" (click)="logout(); closeMenu()">
+    <lucide-icon [img]="icons.logOut" [size]="20"></lucide-icon>
+    Logout
   </button>
 </nav>

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, LayoutDashboard, PenTool, MessageCircle, FileText, Folder, Menu, X, Sun, Moon } from 'lucide-angular';
+import { LucideAngularModule, LayoutDashboard, PenTool, MessageCircle, FileText, Folder, Menu, X, Sun, Moon, Users, LogOut } from 'lucide-angular';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -20,10 +21,17 @@ export class HeaderComponent implements OnInit {
     menu: Menu,
     x: X,
     sun: Sun,
-    moon: Moon
+    moon: Moon,
+    users: Users,
+    logOut: LogOut
   };
   mobileMenuOpen = false;
   isDarkMode = false;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     const saved = localStorage.getItem('theme');
@@ -47,5 +55,18 @@ export class HeaderComponent implements OnInit {
 
   private applyTheme(): void {
     document.body.classList.toggle('dark-mode', this.isDarkMode);
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+
+  getUserName(): string {
+    return this.authService.getName() || '';
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
