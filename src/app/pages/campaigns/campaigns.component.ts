@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Image, Loader2 } from 'lucide-angular';
 
 import { CampaignService } from '../../services/campaign.service';
 import { PostService } from '../../services/post.service';
@@ -8,11 +9,16 @@ import { PostService } from '../../services/post.service';
 @Component({
   selector: 'app-campaigns',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, LucideAngularModule],
   templateUrl: './campaigns.component.html',
   styleUrls: ['./campaigns.component.css']
 })
 export class CampaignsComponent {
+
+  icons = {
+    image: Image,
+    loader2: Loader2
+  };
 
   // ================= FORM STATE =================
 
@@ -184,6 +190,24 @@ export class CampaignsComponent {
     post.editing = !post.editing;
   }
 
+  // ================= GENERATE IMAGE =================
+
+  generateImage(post: any) {
+    if (!post.content) return;
+    
+    post.generatingImage = true;
+
+    this.postService.generateImage(post.id).subscribe({
+      next: (res: any) => {
+        post.imageUrl = res.imageUrl || res.url;
+        post.generatingImage = false;
+      },
+      error: () => {
+        post.generatingImage = false;
+      }
+    });
+  }
+
   // ================= SAVE =================
 
   save(post: any) {
@@ -204,7 +228,9 @@ export class CampaignsComponent {
 
       approved: post.approved,
 
-      link: post.link
+      link: post.link,
+
+      imageUrl: post.imageUrl
 
     }).subscribe({
 
