@@ -60,7 +60,8 @@ export class CampaignsComponent {
     platform: 'LINKEDIN',
     scheduledAt: null,
     permanent: false,
-    approved: true
+    approved: true,
+    link: ''
   };
 
   constructor(
@@ -147,7 +148,8 @@ export class CampaignsComponent {
             platform: 'LINKEDIN',
             scheduledAt: null,
             permanent: false,
-            approved: true
+            approved: true,
+            link: ''
           };
 
           this.previewUrl = null;

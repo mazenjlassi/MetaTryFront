@@ -222,6 +222,12 @@
                 <input type="text" [(ngModel)]="post.hashtags" class="form-input" placeholder="#AI #Marketing" />
               </div>
 
+              <!-- Link -->
+              <div class="form-group">
+                <label>Link</label>
+                <input type="text" [(ngModel)]="post.link" class="form-input" placeholder="https://example.com" />
+              </div>
+
               <div class="form-group">
                 <label>Platform</label>
                 <select [(ngModel)]="post.platform" class="form-input">
@@ -294,6 +300,12 @@
         <div class="form-group">
           <label for="post-content">Content</label>
           <textarea id="post-content" [(ngModel)]="manualPost.content" name="content" placeholder="Write your post..." class="form-input" rows="4"></textarea>
+        </div>
+
+        <!-- Link -->
+        <div class="form-group">
+          <label for="post-link">Link</label>
+          <input id="post-link" [(ngModel)]="manualPost.link" name="link" placeholder="https://example.com" type="text" class="form-input" />
         </div>
 
         <!-- Hashtags -->
