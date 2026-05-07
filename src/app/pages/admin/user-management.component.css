@@ -25,7 +25,7 @@
   background: linear-gradient(135deg, var(--primary), var(--primary-hover));
   border: none;
   border-radius: 12px;
-  color: var(--white);
+  color: white;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -44,7 +44,7 @@
 
 .btn-secondary {
   padding: 12px 20px;
-  background: transparent;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
   color: var(--text-primary);
@@ -55,7 +55,7 @@
 
 .btn-secondary:hover {
   background: var(--primary);
-  color: var(--white);
+  color: white;
 }
 
 .error-message {
@@ -74,10 +74,6 @@
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 24px;
-}
-
-body.dark-mode .create-form {
-  background: rgba(18, 26, 47, 0.82);
 }
 
 .create-form h3 {
@@ -116,12 +112,11 @@ body.dark-mode .create-form {
   font-size: 14px;
   outline: none;
   transition: all 0.2s ease;
+  width: 100%;
 }
 
-body.dark-mode .form-group input,
-body.dark-mode .form-group select {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.form-group input::placeholder {
+  color: var(--text-secondary);
 }
 
 .form-group input:focus,
@@ -142,10 +137,6 @@ body.dark-mode .form-group select {
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
-}
-
-body.dark-mode .users-table {
-  background: rgba(18, 26, 47, 0.82);
 }
 
 .table-header {
@@ -245,33 +236,31 @@ body.dark-mode .users-table {
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
+  background: var(--background);
 }
 
 .btn-icon.ban {
-  background: rgba(239, 68, 68, 0.1);
   color: var(--error);
 }
 
 .btn-icon.ban:hover {
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.15);
 }
 
 .btn-icon.unban {
-  background: rgba(16, 185, 129, 0.1);
   color: var(--success);
 }
 
 .btn-icon.unban:hover {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.15);
 }
 
 .btn-icon.delete {
-  background: rgba(239, 68, 68, 0.1);
   color: var(--error);
 }
 
 .btn-icon.delete:hover {
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.15);
 }
 
 .loading {
