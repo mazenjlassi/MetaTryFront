@@ -6,9 +6,15 @@
       <h1>Campaigns</h1>
       <p class="subtitle">Create your content topic and then create your posts</p>
     </div>
-    <button class="btn-primary" (click)="showForm = true" aria-label="Create new campaign">
-      + New Campaign
-    </button>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="enableExistingMode()" aria-label="Add to existing campaign">
+        <lucide-icon [img]="icons.folderPlus" [size]="18"></lucide-icon>
+        Add to Existing
+      </button>
+      <button class="btn-primary" (click)="enableNewMode()" aria-label="Create new campaign">
+        + New Campaign
+      </button>
+    </div>
   </header>
 
   <!-- MAIN CONTENT LAYOUT -->
@@ -17,15 +23,36 @@
     <!-- LEFT: CREATE FORM (when active) -->
     <aside class="form-panel" *ngIf="showForm">
       <div class="panel-header">
-        <h2>Create Campaign</h2>
+        <h2>{{ showExistingMode ? 'Add to Existing Campaign' : 'Create Campaign' }}</h2>
         <button class="close-btn" (click)="showForm = false" aria-label="Close form">&#10005;</button>
       </div>
 
       <form class="campaign-form" (ngSubmit)="generate()">
         <!-- Campaign Name -->
         <div class="form-group">
-          <label for="campaign-name">Campaign Name</label>
+          <label for="campaign-name">{{ showExistingMode ? 'Select Campaign' : 'Campaign Name' }}</label>
+          
+          <!-- Existing mode: dropdown with datalist -->
+          <div *ngIf="showExistingMode" class="campaign-selector">
+            <input 
+              id="campaign-name"
+              [(ngModel)]="name"
+              name="name"
+              placeholder="Type to search campaign..."
+              type="text"
+              class="form-input"
+              list="campaigns-list"
+              (change)="onCampaignSelect($event)"
+              autocomplete="off"
+            />
+            <datalist id="campaigns-list">
+              <option *ngFor="let c of recentCampaigns" [value]="c.name">
+            </datalist>
+          </div>
+          
+          <!-- New mode: regular input -->
           <input 
+            *ngIf="!showExistingMode"
             id="campaign-name"
             [(ngModel)]="name"
             name="name"
@@ -36,8 +63,22 @@
           />
         </div>
 
-        <!-- Topic -->
-        <div class="form-group">
+        <!-- Topic (for existing mode, show read-only) -->
+        <div class="form-group" *ngIf="showExistingMode">
+          <label for="campaign-topic">Topic</label>
+          <input 
+            id="campaign-topic"
+            [(ngModel)]="topic"
+            name="topic"
+            type="text"
+            class="form-input topic-display"
+            readonly
+            placeholder="Select a campaign to see its topic"
+          />
+        </div>
+
+        <!-- Topic (for new mode, editable) -->
+        <div class="form-group" *ngIf="!showExistingMode">
           <label for="campaign-topic">Topic</label>
           <input 
             id="campaign-topic"
@@ -65,12 +106,28 @@
           <span id="posts-hint" class="hint-text">Number of posts to generate</span>
         </div>
 
+        <!-- Selected Campaign Info -->
+        <div class="selected-info" *ngIf="showExistingMode && selectedExistingCampaign">
+          <div class="info-item">
+            <span class="info-label">Campaign:</span>
+            <span class="info-value">{{ selectedExistingCampaign.name }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Platform:</span>
+            <span class="info-value">{{ selectedExistingCampaign.platform }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Posts:</span>
+            <span class="info-value">{{ selectedExistingCampaign.postCount || 0 }}</span>
+          </div>
+        </div>
+
         <!-- Actions -->
         <div class="form-actions">
           <button 
             type="submit"
             class="btn-primary"
-            [disabled]="loading"
+            [disabled]="loading || (showExistingMode && !campaignId)"
             aria-busy="loading"
           >
             {{ loading ? 'Generating...' : 'Generate with AI' }}
@@ -80,9 +137,9 @@
             type="button"
             class="btn-secondary"
             (click)="createManualCampaign()"
-            [disabled]="loading"
+            [disabled]="loading || (showExistingMode && !campaignId)"
           >
-            Manual Campaign
+            Manual Post
           </button>
         </div>
       </form>
@@ -99,7 +156,8 @@
       <div *ngIf="posts.length === 0" class="empty-state">
         <div class="empty-icon">&#128196;</div>
         <h4>No posts yet</h4>
-        <p>Create a campaign to generate AI-powered posts</p>
+        <p *ngIf="showExistingMode && selectedExistingCampaign">No posts in this campaign yet</p>
+        <p *ngIf="!showExistingMode || !selectedExistingCampaign">Create a campaign to generate AI-powered posts</p>
         <button class="btn-primary" (click)="showForm = true">
           + Create Campaign
         </button>

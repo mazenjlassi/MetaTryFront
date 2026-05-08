@@ -37,4 +37,18 @@ export class CampaignService {
   generateCampaign(data: any) {
     return this.http.post(`${this.apiUrl}/campaigns/generate`, data);
   }
+
+  // ================= RECENT CAMPAIGNS =================
+
+  getRecent(limit: number = 5) {
+    return this.http.get<any[]>(`${this.apiUrl}/campaigns/recent?limit=${limit}`);
+  }
+
+  // ================= GENERATE FOR EXISTING =================
+
+  generateForExisting(campaignId: number, postNumber: number) {
+    return this.http.post<any[]>(`${this.apiUrl}/campaigns/${campaignId}/generate`, {
+      postNumber: postNumber
+    });
+  }
 }

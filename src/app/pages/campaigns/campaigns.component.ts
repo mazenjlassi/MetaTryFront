@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Image, Loader2 } from 'lucide-angular';
+import { LucideAngularModule, Image, Loader2, FolderPlus } from 'lucide-angular';
 
 import { CampaignService } from '../../services/campaign.service';
 import { PostService } from '../../services/post.service';
@@ -13,16 +13,23 @@ import { PostService } from '../../services/post.service';
   templateUrl: './campaigns.component.html',
   styleUrls: ['./campaigns.component.css']
 })
-export class CampaignsComponent {
+export class CampaignsComponent implements OnInit {
 
   icons = {
     image: Image,
-    loader2: Loader2
+    loader2: Loader2,
+    folderPlus: FolderPlus
   };
 
   // ================= FORM STATE =================
 
   showForm = false;
+  showExistingMode = false;
+
+  // ================= RECENT CAMPAIGNS =================
+
+  recentCampaigns: any[] = [];
+  selectedExistingCampaign: any = null;
 
   // ================= FILTERS =================
 
@@ -69,9 +76,79 @@ export class CampaignsComponent {
     private postService: PostService
   ) {}
 
+  ngOnInit() {
+    this.loadRecentCampaigns();
+  }
+
+  // ================= RECENT CAMPAIGNS =================
+
+  loadRecentCampaigns() {
+    this.campaignService.getRecent(5).subscribe({
+      next: (res) => {
+        this.recentCampaigns = res;
+      },
+      error: () => {}
+    });
+  }
+
+  onCampaignSelect(event: any) {
+    const selectedName = event.target.value;
+    const campaign = this.recentCampaigns.find(c => c.name === selectedName);
+    
+    if (campaign) {
+      this.selectedExistingCampaign = campaign;
+      this.campaignId = campaign.id;
+      this.topic = campaign.topic || '';
+      
+      // Load posts for this campaign
+      this.loadCampaignPosts(campaign.id);
+    } else {
+      this.selectedExistingCampaign = null;
+      this.campaignId = null;
+      this.topic = '';
+    }
+  }
+
+  loadCampaignPosts(campaignId: number) {
+    this.campaignService.getCampaignPosts(campaignId).subscribe({
+      next: (res) => {
+        this.posts = res;
+      },
+      error: () => {
+        this.posts = [];
+      }
+    });
+  }
+
+  enableExistingMode() {
+    this.showForm = true;
+    this.showExistingMode = true;
+    this.name = '';
+    this.topic = '';
+    this.campaignId = null;
+    this.selectedExistingCampaign = null;
+    this.posts = [];
+    this.loadRecentCampaigns();
+  }
+
+  enableNewMode() {
+    this.showForm = true;
+    this.showExistingMode = false;
+    this.name = '';
+    this.topic = '';
+    this.campaignId = null;
+    this.selectedExistingCampaign = null;
+    this.posts = [];
+  }
+
   // ================= CREATE MANUAL CAMPAIGN =================
 
   createManualCampaign() {
+    if (this.showExistingMode && this.campaignId) {
+      // Adding to existing campaign - just open manual post modal
+      this.showManual = true;
+      return;
+    }
 
     if (!this.name || !this.topic) {
       alert('Name and topic are required');
@@ -85,14 +162,10 @@ export class CampaignsComponent {
       topic: this.topic
     }).subscribe({
       next: (res: any) => {
-
         this.campaignId = res.id;
-
         this.loading = false;
-
         this.showManual = true;
       },
-
       error: () => {
         this.loading = false;
       }
@@ -102,27 +175,21 @@ export class CampaignsComponent {
   // ================= FILE =================
 
   onFileSelected(event: any) {
-
     this.selectedFile = event.target.files[0];
-
     if (this.selectedFile) {
-
       this.previewUrl = URL.createObjectURL(this.selectedFile);
-
     }
   }
 
   // ================= CREATE MANUAL POST =================
 
   createManualPost() {
-
     if (!this.campaignId) return;
 
     this.loading = true;
 
     const data = {
       ...this.manualPost,
-
       scheduledAt: this.manualPost.scheduledAt
         ? new Date(this.manualPost.scheduledAt).toISOString()
         : null
@@ -135,12 +202,8 @@ export class CampaignsComponent {
         this.selectedFile
       )
       .subscribe({
-
         next: (res: any) => {
-
           this.posts.push(res);
-
-          // reset form
           this.manualPost = {
             title: '',
             content: '',
@@ -151,18 +214,12 @@ export class CampaignsComponent {
             approved: true,
             link: ''
           };
-
           this.previewUrl = null;
-
           this.loading = false;
         },
-
         error: (err) => {
-
           console.error(err);
-
           this.loading = false;
-
           alert('Failed to create post');
         }
       });
@@ -171,17 +228,11 @@ export class CampaignsComponent {
   // ================= DELETE =================
 
   delete(post: any) {
-
     if (!confirm('Delete this post?')) return;
 
     this.postService.deletePost(post.id).subscribe({
-
       next: () => {
-
-        this.posts = this.posts.filter(
-          p => p.id !== post.id
-        );
-
+        this.posts = this.posts.filter(p => p.id !== post.id);
       }
     });
   }
@@ -213,40 +264,25 @@ export class CampaignsComponent {
   // ================= SAVE =================
 
   save(post: any) {
-
     this.savingPostId = post.id;
 
     this.postService.updatePost(post.id, {
-
       title: post.title,
       content: post.content,
       hashtags: post.hashtags,
-
       platform: post.platform,
-
       scheduledAt: post.scheduledAt,
-
       permanent: post.permanent,
-
       approved: post.approved,
-
       link: post.link,
-
       imageUrl: post.imageUrl
-
     }).subscribe({
-
       next: () => {
-
         this.savingPostId = null;
-
         alert('Saved!');
       },
-
       error: () => {
-
         this.savingPostId = null;
-
         alert('Failed to save');
       }
     });
@@ -255,26 +291,17 @@ export class CampaignsComponent {
   // ================= PUBLISH =================
 
   publishNow(post: any) {
-
     this.publishingPostId = post.id;
 
     this.postService.publishPost(post.id).subscribe({
-
       next: () => {
-
         post.status = 'PUBLISHED';
-
         post.publishedAt = new Date();
-
         this.publishingPostId = null;
-
         alert('Published!');
       },
-
       error: () => {
-
         this.publishingPostId = null;
-
         alert('Failed to publish');
       }
     });
@@ -283,28 +310,33 @@ export class CampaignsComponent {
   // ================= AI GENERATION =================
 
   generate() {
+    if (this.showExistingMode && this.campaignId) {
+      this.loading = true;
+      this.campaignService.generateForExisting(this.campaignId, this.postNumber).subscribe({
+        next: (res: any) => {
+          this.posts = [...this.posts, ...res];
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+          alert('Failed to generate posts');
+        }
+      });
+      return;
+    }
 
     this.loading = true;
 
     this.campaignService.generateCampaign({
-
       name: this.name,
-
       topic: this.topic,
-
       postNumber: this.postNumber
-
     }).subscribe({
-
       next: (res: any) => {
-
         this.posts = res;
-
         this.loading = false;
       },
-
       error: () => {
-
         this.loading = false;
       }
     });
