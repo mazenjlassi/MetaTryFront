@@ -114,4 +114,20 @@ export class PostService {
       `${this.api}/calendar?start=${start}&end=${end}`
     );
   }
+
+  // ================= TIMING ANALYSIS =================
+
+  getTimingAnalysis() {
+    return this.http.get<any>(`${this.api}/timing-analysis`);
+  }
+
+  // ================= WEEKLY COMPARISON =================
+
+  getWeeklyComparison() {
+    return this.http.get<any>(`${this.api}/weekly-comparison`);
+  }
+
+  getUpcomingScheduled(limit: number = 3) {
+    return this.http.get<any[]>(`${this.api}/upcoming-scheduled?limit=${limit}`);
+  }
 }

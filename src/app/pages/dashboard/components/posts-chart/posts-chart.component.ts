@@ -29,9 +29,6 @@ import Chart from 'chart.js/auto';
       width: 100%;
       height: 100%;
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   `]
 })
@@ -55,16 +52,37 @@ export class PostsChartComponent implements AfterViewInit, OnDestroy {
   loadChart() {
     if (!this.chartRef?.nativeElement) return;
 
-    this.postService.getLatestPosts(10).subscribe(posts => {
-      const fb = posts.filter(p => p.platform === 'FACEBOOK').reduce((sum, p) => sum + (p.likes || 0), 0);
-      const ig = posts.filter(p => p.platform === 'INSTAGRAM').reduce((sum, p) => sum + (p.likes || 0), 0);
-      const li = posts.filter(p => p.platform === 'LINKEDIN').reduce((sum, p) => sum + (p.likes || 0), 0);
-      const total = fb + ig + li;
-      this.createDonutChart(fb, ig, li, total);
+    this.postService.getLatestPosts(20).subscribe(posts => {
+      if (!posts || posts.length === 0) {
+        this.createEmptyChart();
+        return;
+      }
+
+      // Get posts sorted by date (most recent first)
+      const sortedPosts = [...posts].sort((a, b) => {
+        const dateA = new Date(a.publishedAt || a.createdAt || 0).getTime();
+        const dateB = new Date(b.publishedAt || b.createdAt || 0).getTime();
+        return dateB - dateA;
+      });
+
+      // Use last 7 posts for the chart
+      const chartPosts = sortedPosts.slice(0, 7).reverse();
+      
+      const labels = chartPosts.map((p, i) => `Day ${i + 1}`);
+      const likes = chartPosts.map(p => p.likes || 0);
+      const comments = chartPosts.map(p => p.commentsCount || 0);
+
+      const hasData = likes.some(l => l > 0) || comments.some(c => c > 0);
+
+      if (hasData) {
+        this.createAreaChart(labels, likes, comments);
+      } else {
+        this.createEmptyChart();
+      }
     });
   }
 
-  createDonutChart(fb: number, ig: number, li: number, total: number) {
+  createAreaChart(labels: string[], likes: number[], comments: number[]) {
     if (this.chart) {
       this.chart.destroy();
     }
@@ -72,71 +90,146 @@ export class PostsChartComponent implements AfterViewInit, OnDestroy {
     if (!this.chartRef?.nativeElement) return;
 
     this.chart = new Chart(this.chartRef.nativeElement, {
-      type: 'doughnut',
+      type: 'line',
       data: {
-        labels: ['Facebook', 'Instagram', 'LinkedIn'],
-        datasets: [{
-          data: [fb || 1, ig || 1, li || 1],
-          backgroundColor: [
-            '#1877F2',
-            '#E1306C',
-            '#0A66C2'
-          ],
-          borderWidth: 0,
-          hoverOffset: 8
-        }]
+        labels,
+        datasets: [
+          {
+            label: 'Likes',
+            data: likes,
+            borderColor: '#0F52D6',
+            backgroundColor: 'rgba(15, 82, 214, 0.15)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#0F52D6',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          },
+          {
+            label: 'Comments',
+            data: comments,
+            borderColor: '#8B5CF6',
+            backgroundColor: 'rgba(139, 92, 246, 0.15)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#8B5CF6',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          }
+        ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '65%',
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              font: { size: 11 },
+              color: '#64748B'
+            }
+          },
+          y: {
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            },
+            ticks: {
+              font: { size: 11 },
+              color: '#64748B'
+            },
+            beginAtZero: true
+          }
+        },
         plugins: {
           legend: {
-            position: 'bottom',
+            position: 'top',
+            align: 'end',
             labels: { 
               usePointStyle: true, 
+              pointStyle: 'circle',
               padding: 20, 
               font: { size: 11 },
               color: '#64748B'
             }
           },
           tooltip: {
-            backgroundColor: 'rgba(15, 82, 214, 0.9)',
-            titleFont: { size: 12, weight: 'bold' },
+            backgroundColor: 'rgba(15, 82, 214, 0.95)',
+            titleFont: { size: 12, weight: 'bold' as any },
             bodyFont: { size: 11 },
             padding: 12,
             cornerRadius: 8,
-            callbacks: {
-              label: (context: any) => {
-                const value = context.raw as number;
-                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                return ` ${value} posts (${percentage}%)`;
-              }
-            }
+            displayColors: true,
+            boxPadding: 6
           }
         },
         animation: {
-          animateRotate: true,
-          animateScale: true,
-          duration: 1000,
+          duration: 1500,
           easing: 'easeOutQuart'
         }
+      }
+    });
+  }
+
+  createEmptyChart() {
+    if (this.chart) {
+      this.chart.destroy();
+    }
+
+    if (!this.chartRef?.nativeElement) return;
+
+    this.chart = new Chart(this.chartRef.nativeElement, {
+      type: 'line',
+      data: {
+        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+        datasets: [
+          {
+            label: 'Likes',
+            data: [0, 0, 0, 0, 0, 0, 0],
+            borderColor: 'rgba(15, 82, 214, 0.3)',
+            backgroundColor: 'rgba(15, 82, 214, 0.05)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: 'rgba(15, 82, 214, 0.3)',
+            pointRadius: 3,
+          },
+          {
+            label: 'Comments',
+            data: [0, 0, 0, 0, 0, 0, 0],
+            borderColor: 'rgba(139, 92, 246, 0.3)',
+            backgroundColor: 'rgba(139, 92, 246, 0.05)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: 'rgba(139, 92, 246, 0.3)',
+            pointRadius: 3,
+          }
+        ]
       },
-      plugins: [{
-        id: 'centerText',
-        beforeDraw: (chart: any) => {
-          const { ctx, width, height } = chart;
-          ctx.restore();
-          const fontSize = (height / 150).toFixed(2);
-          ctx.font = `${fontSize}em sans-serif`;
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = '#0F52D6';
-          const text = total.toString();
-          const textWidth = ctx.measureText(text).width;
-          ctx.fillText(text, width / 2 - textWidth / 2, height / 2);
-          ctx.save();
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+          y: { grid: { color: 'rgba(0, 0, 0, 0.05)' }, ticks: { color: '#94a3b8' }, beginAtZero: true }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
         }
-      }]
+      }
     });
   }
 }

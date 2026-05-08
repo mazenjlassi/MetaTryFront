@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LucideAngularModule, FileText, Send, Lightbulb, MessageSquare, TrendingUp, Users, PenTool, Rocket } from 'lucide-angular';
+import { LucideAngularModule, FileText, Send, Lightbulb, MessageSquare, TrendingUp, Users, PenTool, Rocket, Clock, Calendar, BarChart3 } from 'lucide-angular';
 import { PostsChartComponent } from './components/posts-chart/posts-chart.component';
 
 import { PostService } from '../../services/post.service';
 import { CampaignService } from '../../services/campaign.service';
+import { AuthService } from '../../services/auth.service';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,6 +34,18 @@ export class DashboardComponent implements OnInit {
   loading = true;
   recentActivity: any[] = [];
 
+  // Marketing features
+  timingAnalysis: any = null;
+  weeklyComparison: any = null;
+  upcomingPosts: any[] = [];
+  showMarketing = false;
+  isMarketingUser = false;
+
+  // Admin features
+  userStats: any = null;
+  campaignProgress: any[] = [];
+  showAdmin = false;
+
   icons = {
     fileText: FileText,
     send: Send,
@@ -40,12 +54,17 @@ export class DashboardComponent implements OnInit {
     trendingUp: TrendingUp,
     users: Users,
     penTool: PenTool,
-    rocket: Rocket
+    rocket: Rocket,
+    clock: Clock,
+    calendar: Calendar,
+    barChart: BarChart3
   };
 
   constructor(
     private postService: PostService,
-    private campaignService: CampaignService
+    private campaignService: CampaignService,
+    private authService: AuthService,
+    private adminService: AdminService
   ) {}
 
   ngOnInit() {
@@ -53,6 +72,65 @@ export class DashboardComponent implements OnInit {
     this.loadStats();
     this.loadCampaigns();
     this.loadRecentActivity();
+
+    this.isMarketingUser = this.authService.isMarketing();
+    const isAdminUser = this.authService.isAdmin();
+
+    if (this.isMarketingUser) {
+      this.showMarketing = true;
+      this.loadMarketingFeatures();
+    }
+
+    if (isAdminUser) {
+      this.showAdmin = true;
+      this.loadAdminFeatures();
+    }
+  }
+
+  loadMarketingFeatures() {
+    this.loadTimingAnalysis();
+    this.loadWeeklyComparison();
+    this.loadUpcomingScheduled();
+  }
+
+  loadAdminFeatures() {
+    this.loadUserStats();
+    this.loadCampaignProgress();
+  }
+
+  loadTimingAnalysis() {
+    this.postService.getTimingAnalysis().subscribe({
+      next: (res) => { this.timingAnalysis = res; },
+      error: () => { this.timingAnalysis = null; }
+    });
+  }
+
+  loadWeeklyComparison() {
+    this.postService.getWeeklyComparison().subscribe({
+      next: (res) => { this.weeklyComparison = res; },
+      error: () => { this.weeklyComparison = null; }
+    });
+  }
+
+  loadUpcomingScheduled() {
+    this.postService.getUpcomingScheduled(3).subscribe({
+      next: (res) => { this.upcomingPosts = res; },
+      error: () => { this.upcomingPosts = []; }
+    });
+  }
+
+  loadUserStats() {
+    this.adminService.getUserStats().subscribe({
+      next: (res) => { this.userStats = res; },
+      error: () => { this.userStats = null; }
+    });
+  }
+
+  loadCampaignProgress() {
+    this.adminService.getCampaignsProgress(3).subscribe({
+      next: (res) => { this.campaignProgress = res; },
+      error: () => { this.campaignProgress = []; }
+    });
   }
 
   loadPosts() {
@@ -129,5 +207,9 @@ export class DashboardComponent implements OnInit {
     }
 
     return 'Engagement levels are low. Focus on clearer messaging and more engaging content.';
+  }
+
+  get userName(): string {
+    return this.authService.getName() || 'User';
   }
 }

@@ -1,142 +1,227 @@
 <div class="dashboard">
 
-  <!-- ================= TOP: IMPACT ZONE ================= -->
-  <section class="dashboard-top">
-    
-    <!-- Welcome + KPI Cards -->
-    <div class="welcome-section">
-      <h1>Welcome back!</h1>
-      <p class="subtitle">Here's what's happening with your content</p>
-      
-      <!-- KPI Cards -->
-      <div class="kpi-grid" *ngIf="stats">
-        <article class="kpi-card" [style.animation-delay.ms]="0">
-          <div class="kpi-icon posts">
-            <lucide-icon [img]="icons.fileText" [size]="24"></lucide-icon>
-          </div>
-          <h2>{{ stats.totalPosts }}</h2>
-          <span class="kpi-label">Total Posts</span>
-          <span class="kpi-trend positive" *ngIf="getPostTrend() > 0">+{{ getPostTrend() }}%</span>
-        </article>
-        
-        <article class="kpi-card" [style.animation-delay.ms]="50">
-          <div class="kpi-icon published">
-            <lucide-icon [img]="icons.send" [size]="24"></lucide-icon>
-          </div>
-          <h2>{{ stats.publishedPosts }}</h2>
-          <span class="kpi-label">Published</span>
-        </article>
-        
-        <article class="kpi-card" [style.animation-delay.ms]="100">
-          <div class="kpi-icon campaigns">
-            <lucide-icon [img]="icons.rocket" [size]="24"></lucide-icon>
-          </div>
-          <h2>{{ stats.activeCampaigns }}</h2>
-          <span class="kpi-label">Active Campaigns</span>
-        </article>
-        
-        <article class="kpi-card" [style.animation-delay.ms]="150">
-          <div class="kpi-icon engagement">
-            <lucide-icon [img]="icons.trendingUp" [size]="24"></lucide-icon>
-          </div>
-          <h2>{{ getEngagementRate() }}%</h2>
-          <span class="kpi-label">Engagement</span>
-        </article>
-      </div>
+  <!-- Top Section: Welcome + Actions -->
+  <div class="top-section">
+    <div class="welcome">
+      <h1>Dashboard</h1>
+      <p>Welcome back, <strong>{{ userName }}</strong></p>
     </div>
-    
-    <!-- Primary Action -->
-    <div class="action-section">
-      <button class="btn-primary btn-lg" routerLink="/campaigns">
-        <lucide-icon [img]="icons.penTool" [size]="18"></lucide-icon>
-        <span>New Campaign</span>
-      </button>
-    </div>
-    
-  </section>
+    <button class="primary-btn" routerLink="/campaigns">
+      <lucide-icon [img]="icons.penTool" [size]="18"></lucide-icon>
+      Create Campaign
+    </button>
+  </div>
 
-  <!-- ================= MIDDLE: DATA ZONE ================= -->
-  <section class="dashboard-middle">
-    
-    <!-- Chart Area -->
-    <div class="chart-section">
-      <div class="section-header">
-        <h3>Post Engagement</h3>
-        <span class="section-subtitle">Performance over time</span>
+  <!-- KPI Cards -->
+  <div class="kpi-section">
+    <div class="kpi-card" [style.animation-delay.ms]="0">
+      <div class="kpi-line"></div>
+      <div class="kpi-icon-wrap">
+        <div class="kpi-icon">
+          <lucide-icon [img]="icons.fileText" [size]="22"></lucide-icon>
+        </div>
       </div>
-      <div class="chart-card">
+      <div class="kpi-info">
+        <span class="kpi-number">{{ stats.totalPosts }}</span>
+        <span class="kpi-title">Total Posts</span>
+      </div>
+    </div>
+
+    <div class="kpi-card" [style.animation-delay.ms]="40">
+      <div class="kpi-line green"></div>
+      <div class="kpi-icon-wrap green">
+        <div class="kpi-icon">
+          <lucide-icon [img]="icons.send" [size]="22"></lucide-icon>
+        </div>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-number">{{ stats.publishedPosts }}</span>
+        <span class="kpi-title">Published</span>
+      </div>
+    </div>
+
+    <div class="kpi-card" [style.animation-delay.ms]="80">
+      <div class="kpi-line purple"></div>
+      <div class="kpi-icon-wrap purple">
+        <div class="kpi-icon">
+          <lucide-icon [img]="icons.rocket" [size]="22"></lucide-icon>
+        </div>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-number">{{ stats.activeCampaigns }}</span>
+        <span class="kpi-title">Campaigns</span>
+      </div>
+    </div>
+
+    <div class="kpi-card" [style.animation-delay.ms]="120">
+      <div class="kpi-line orange"></div>
+      <div class="kpi-icon-wrap orange">
+        <div class="kpi-icon">
+          <lucide-icon [img]="icons.trendingUp" [size]="22"></lucide-icon>
+        </div>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-number">{{ getEngagementRate() }}%</span>
+        <span class="kpi-title">Engagement</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marketing: Insights Panel -->
+  <div class="insights-panel" *ngIf="showMarketing">
+    <div class="panel-header">
+      <h3>Performance Insights</h3>
+    </div>
+    <div class="insights-grid">
+      <!-- Best Times -->
+      <div class="insight-box" *ngIf="timingAnalysis">
+        <div class="insight-title">
+          <lucide-icon [img]="icons.clock" [size]="16"></lucide-icon>
+          Best Posting Times
+        </div>
+        <div class="time-row">
+          <span class="badge fb">FB {{ timingAnalysis.facebookBestHour }}</span>
+          <span class="badge ig">IG {{ timingAnalysis.instagramBestHour }}</span>
+        </div>
+      </div>
+
+      <!-- Weekly -->
+      <div class="insight-box" *ngIf="weeklyComparison">
+        <div class="insight-title">
+          <lucide-icon [img]="icons.barChart" [size]="16"></lucide-icon>
+          Weekly Change
+        </div>
+        <div class="weekly-row">
+          <div class="week-stat">
+            <span class="week-label">This week</span>
+            <span class="week-num">{{ weeklyComparison.thisWeek }}</span>
+          </div>
+          <div class="week-stat">
+            <span class="week-label">Last week</span>
+            <span class="week-num muted">{{ weeklyComparison.lastWeek }}</span>
+          </div>
+          <div class="change" [class.pos]="weeklyComparison.increased" [class.neg]="!weeklyComparison.increased">
+            {{ weeklyComparison.increased ? '+' : '' }}{{ weeklyComparison.percentage | number:'1.0-0' }}%
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming -->
+      <div class="insight-box" *ngIf="upcomingPosts.length > 0">
+        <div class="insight-title">
+          <lucide-icon [img]="icons.calendar" [size]="16"></lucide-icon>
+          Scheduled Soon
+        </div>
+        <div class="upcoming-mini">
+          <div class="mini-item" *ngFor="let p of upcomingPosts.slice(0, 2)">
+            <span class="mini-title">{{ p.title || 'Post' }}</span>
+            <span class="mini-time">{{ p.scheduledAt | date:'h:mm a' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin: User Stats -->
+  <div class="admin-panel" *ngIf="showAdmin && userStats">
+    <div class="panel-header">
+      <h3>Team Overview</h3>
+    </div>
+    <div class="admin-cards">
+      <div class="admin-card">
+        <span class="admin-num">{{ userStats.totalMarketing }}</span>
+        <span class="admin-label">Marketing</span>
+      </div>
+      <div class="admin-card active-card">
+        <span class="admin-num">{{ userStats.activeUsers }}</span>
+        <span class="admin-label">Active</span>
+      </div>
+      <div class="admin-card banned-card">
+        <span class="admin-num">{{ userStats.bannedUsers }}</span>
+        <span class="admin-label">Banned</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content-grid">
+
+    <!-- Chart -->
+    <div class="chart-box">
+      <div class="box-header">
+        <h3>Engagement Overview</h3>
+      </div>
+      <div class="chart-area">
         <app-posts-chart></app-posts-chart>
       </div>
     </div>
-    
-    <!-- Activity Feed -->
-    <div class="activity-section">
-      <div class="section-header">
-        <h3>Recent Activity</h3>
+
+    <!-- Top Posts -->
+    <div class="posts-box">
+      <div class="box-header">
+        <h3>Top Posts</h3>
+        <span class="box-subtitle">Best performing</span>
       </div>
-      
-      <div class="activity-feed">
-        <div *ngFor="let activity of recentActivity" class="activity-item" [attr.data-type]="activity.type">
-          <span class="activity-icon">
-            <lucide-icon *ngIf="activity.type === 'campaign'" [img]="icons.rocket" [size]="16"></lucide-icon>
-            <lucide-icon *ngIf="activity.type === 'post'" [img]="icons.fileText" [size]="16"></lucide-icon>
-            <lucide-icon *ngIf="activity.type === 'insight'" [img]="icons.lightbulb" [size]="16"></lucide-icon>
-            <lucide-icon *ngIf="activity.type === 'comment'" [img]="icons.messageSquare" [size]="16"></lucide-icon>
-          </span>
-          <div class="activity-content">
-            <p class="activity-text">{{ activity.text }}</p>
-            <span class="activity-time">{{ activity.time | date:'short' }}</span>
+      <div class="post-list">
+        <div class="post-row" *ngFor="let post of posts.slice(0, 3)">
+          <div class="post-data">
+            <span class="post-name">{{ post.title || 'Untitled' }}</span>
+            <span class="post-stats">
+              {{ post.likes || 0 }} likes · {{ post.commentsCount || 0 }} comments
+            </span>
           </div>
+          <span class="post-platform">{{ post.platform }}</span>
         </div>
-        
-        <!-- Empty State -->
-        <div *ngIf="recentActivity.length === 0" class="empty-activity">
-          <p>No recent activity</p>
-        </div>
+        <div *ngIf="posts.length === 0" class="no-data">No posts yet</div>
       </div>
     </div>
-    
-  </section>
 
-  <!-- ================= BOTTOM: CONTROL ZONE ================= -->
-  <section class="dashboard-bottom">
-    
+  </div>
+
+  <!-- Admin: Campaign Progress -->
+  <div class="progress-panel" *ngIf="showAdmin && campaignProgress.length > 0">
+    <div class="box-header">
+      <h3>Campaign Progress</h3>
+    </div>
+    <div class="progress-grid">
+      <div class="progress-card" *ngFor="let c of campaignProgress">
+        <div class="progress-top">
+          <span class="progress-name">{{ c.name }}</span>
+          <span class="progress-topic">{{ c.topic }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="(c.publishedPosts / c.totalPosts) * 100 || 0"></div>
+        </div>
+        <span class="progress-label">{{ c.publishedPosts }} / {{ c.totalPosts }} posts</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Campaigns -->
+  <div class="campaigns-section">
     <div class="section-header">
       <h3>Recent Campaigns</h3>
-      <button class="btn-ghost" routerLink="/campaign-list">View All</button>
+      <button class="link-btn" routerLink="/campaign-list">View all</button>
     </div>
-    
-    <!-- Campaign Mini Cards -->
-    <div class="campaigns-grid">
-      <article 
-        *ngFor="let c of campaigns; let i = index" 
-        class="mini-card"
-        [style.animation-delay.ms]="i * 50"
-        [routerLink]="['/campaigns', c.id]"
-      >
-        <div class="mini-card-header">
-          <span class="platform-badge" [attr.data-platform]="c.platform || 'LINKEDIN'">
-            {{ c.platform || 'LINKEDIN' }}
-          </span>
+    <div class="campaign-grid">
+      <div class="campaign-card" *ngFor="let c of campaigns.slice(0, 3)" [routerLink]="['/campaigns', c.id]">
+        <div class="card-header">
+          <span class="platform-tag" [attr.data-platform]="c.platform || 'LINKEDIN'">{{ c.platform || 'LINKEDIN' }}</span>
           <span class="status-dot" [attr.data-status]="c.status?.toLowerCase()"></span>
         </div>
         <h4>{{ c.name }}</h4>
-        <p class="topic">{{ c.topic }}</p>
-        <div class="mini-card-meta">
+        <p>{{ c.topic }}</p>
+        <div class="card-footer">
           <span>{{ c.postCount || 0 }} posts</span>
-          <span class="dot"></span>
           <span>{{ c.createdAt | date:'MMM d' }}</span>
         </div>
-      </article>
-      
-      <!-- Empty State -->
-      <div *ngIf="campaigns.length === 0" class="empty-campaigns">
-        <lucide-icon [img]="icons.fileText" [size]="32"></lucide-icon>
+      </div>
+      <div *ngIf="campaigns.length === 0" class="empty-state">
+        <lucide-icon [img]="icons.rocket" [size]="32"></lucide-icon>
         <p>No campaigns yet</p>
-        <button class="btn-secondary" routerLink="/campaigns">Create Campaign</button>
+        <button class="primary-btn small" routerLink="/campaigns">Create</button>
       </div>
     </div>
-    
-  </section>
+  </div>
 
 </div>
