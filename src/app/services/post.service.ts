@@ -106,4 +106,12 @@ export class PostService {
       formData
     );
   }
+
+  // ================= CALENDAR =================
+
+  getCalendarEvents(start: string, end: string) {
+    return this.http.get<any[]>(
+      `${this.api}/calendar?start=${start}&end=${end}`
+    );
+  }
 }

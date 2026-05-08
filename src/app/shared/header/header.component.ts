@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, LayoutDashboard, PenTool, MessageCircle, FileText, Folder, Menu, X, Sun, Moon, Users, LogOut } from 'lucide-angular';
+import { LucideAngularModule, LayoutDashboard, PenTool, MessageCircle, FileText, Folder, Menu, X, Sun, Moon, Users, LogOut, Calendar } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -23,7 +23,8 @@ export class HeaderComponent implements OnInit {
     sun: Sun,
     moon: Moon,
     users: Users,
-    logOut: LogOut
+    logOut: LogOut,
+    calendar: Calendar
   };
   mobileMenuOpen = false;
   isDarkMode = false;
@@ -59,6 +60,10 @@ export class HeaderComponent implements OnInit {
 
   isAdmin(): boolean {
     return this.authService.isAdmin();
+  }
+
+  isMarketing(): boolean {
+    return this.authService.isMarketing();
   }
 
   getUserName(): string {

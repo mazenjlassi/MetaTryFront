@@ -27,6 +27,11 @@
       <lucide-icon [img]="icons.folder" [size]="20"></lucide-icon>
       <span>Campaign List</span>
     </a>
+    <!-- Calendar - Marketing Only -->
+    <a *ngIf="isMarketing()" routerLink="/calendar" routerLinkActive="active" aria-label="Calendar">
+      <lucide-icon [img]="icons.calendar" [size]="20"></lucide-icon>
+      <span>Calendar</span>
+    </a>
     <!-- Admin Only -->
     <a *ngIf="isAdmin()" routerLink="/admin/users" routerLinkActive="active" aria-label="User Management">
       <lucide-icon [img]="icons.users" [size]="20"></lucide-icon>
@@ -113,9 +118,14 @@
     <lucide-icon [img]="icons.fileText" [size]="20"></lucide-icon>
     Posts
   </a>
-  <a routerLink="/campaign-list" routerLinkActive="active" (click)="closeMenu()">
+<a routerLink="/campaign-list" routerLinkActive="active" (click)="closeMenu()">
     <lucide-icon [img]="icons.folder" [size]="20"></lucide-icon>
-    Campaign List
+    <span>Campaign List</span>
+  </a>
+  <!-- Calendar - Marketing Only -->
+  <a *ngIf="isMarketing()" routerLink="/calendar" routerLinkActive="active" (click)="closeMenu()">
+    <lucide-icon [img]="icons.calendar" [size]="20"></lucide-icon>
+    <span>Calendar</span>
   </a>
   <!-- Admin Only -->
   <a *ngIf="isAdmin()" routerLink="/admin/users" routerLinkActive="active" (click)="closeMenu()">

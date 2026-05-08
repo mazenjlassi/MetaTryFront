@@ -8,6 +8,7 @@ import { CampaignListComponent } from './pages/campaign-list/campaign-list.compo
 import { CampaignDetailsComponent } from './pages/campaign-list/campaign-details/campaign-details.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { UserManagementComponent } from './pages/admin/user-management.component';
+import { CalendarComponent } from './pages/calendar/calendar.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -19,5 +20,6 @@ export const routes: Routes = [
     {path: 'campaigns/:id', component: CampaignDetailsComponent },
     {path: 'chat', component: ChatComponent },
     {path: 'admin/users', component: UserManagementComponent },
+    {path: 'calendar', component: CalendarComponent },
     {path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 ];
