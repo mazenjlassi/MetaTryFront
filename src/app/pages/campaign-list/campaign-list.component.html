@@ -88,10 +88,7 @@
           <span class="stat-value">{{ c.postCount || 0 }}</span>
           <span class="stat-label">Posts</span>
         </div>
-        <div class="stat">
-          <span class="stat-value">${{ c.budget || 0 }}</span>
-          <span class="stat-label">Budget</span>
-        </div>
+        
         <div class="stat">
           <span class="stat-value">{{ c.createdAt | date:'MMM d' }}</span>
           <span class="stat-label">Created</span>
@@ -108,13 +105,6 @@
 
       <!-- Actions -->
       <div class="card-actions">
-        <button 
-          class="action-btn"
-          [routerLink]="['/campaigns', c.id]"
-          aria-label="View campaign"
-        >
-          &#128065; View
-        </button>
         <button 
           class="action-btn primary"
           (click)="openCampaign($event, c.id)"

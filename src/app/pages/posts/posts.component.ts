@@ -63,10 +63,14 @@ export class PostsComponent implements OnInit {
 
     request.subscribe({
       next: (res: any) => {
+        console.log('Posts loaded:', this.activeTab, res);
         this.posts = res;
         this.loading = false;
       },
-      error: () => this.loading = false
+      error: (err) => {
+        console.error('Error loading posts:', err);
+        this.loading = false;
+      }
     });
   }
 
