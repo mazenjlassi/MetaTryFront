@@ -68,7 +68,7 @@ export class PostsChartComponent implements AfterViewInit, OnDestroy {
       // Use last 7 posts for the chart
       const chartPosts = sortedPosts.slice(0, 7).reverse();
       
-      const labels = chartPosts.map((p, i) => `Day ${i + 1}`);
+      const labels = chartPosts.map((p, i) => `Post ${i + 1}`);
       const likes = chartPosts.map(p => p.likes || 0);
       const comments = chartPosts.map(p => p.commentsCount || 0);
 
@@ -192,7 +192,7 @@ export class PostsChartComponent implements AfterViewInit, OnDestroy {
     this.chart = new Chart(this.chartRef.nativeElement, {
       type: 'line',
       data: {
-        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+        labels: ['Post 1', 'Post 2', 'Post 3', 'Post 4', 'Post 5', 'Post 6', 'Post 7'],
         datasets: [
           {
             label: 'Likes',

@@ -81,4 +81,18 @@ export class PostsComponent implements OnInit {
   canEdit(post: any): boolean {
     return post.permanent || post.status !== 'PUBLISHED';
   }
+
+  postNow(post: any) {
+    if (!confirm('Post this to social media now?')) return;
+
+    this.service.publishPost(post.id).subscribe({
+      next: () => {
+        post.status = 'PUBLISHED';
+        alert('Posted successfully!');
+      },
+      error: () => {
+        alert('Failed to post');
+      }
+    });
+  }
 }
