@@ -750,6 +750,8 @@
 .modal-content {
   width: 100%;
   max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
   background: var(--card);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl);
