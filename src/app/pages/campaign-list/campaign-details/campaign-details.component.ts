@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CampaignService } from '../../../services/campaign.service';
 import { PostService } from '../../../services/post.service';
 import { InsightService } from '../../../services/insight.service';
+import { CommentService } from '../../../services/comment.service';
 
 @Component({
   selector: 'app-campaign-details',
@@ -17,6 +18,7 @@ export class CampaignDetailsComponent implements OnInit {
   campaign: any = null;
   posts: any[] = [];
   insights: any = null;
+  campaignComments: any[] = [];
 
   loading = true;
 
@@ -27,7 +29,8 @@ export class CampaignDetailsComponent implements OnInit {
     private router: Router,
     private campaignService: CampaignService,
     private postService: PostService,
-    private insightService: InsightService
+    private insightService: InsightService,
+    private commentService: CommentService
   ) {}
 
   ngOnInit(): void {
@@ -36,6 +39,7 @@ export class CampaignDetailsComponent implements OnInit {
     this.loadCampaign();
     this.loadPosts();
     this.loadInsights();
+    this.loadCampaignComments();
   }
 
   // ================= LOADERS =================
@@ -67,9 +71,32 @@ export class CampaignDetailsComponent implements OnInit {
     });
   }
 
+  loadCampaignComments() {
+    this.commentService.getByCampaign(this.campaignId).subscribe({
+      next: (res) => {
+        this.campaignComments = res || [];
+      },
+      error: () => {}
+    });
+  }
+
   // 🔄 OPTIONAL: reload insights (useful for button later)
   reloadInsights() {
     this.loadInsights();
+  }
+
+  // ================= DELETE =================
+
+  deleteCampaign() {
+    if (!confirm('Delete this campaign and all its posts permanently?')) return;
+    this.campaignService.deleteCampaign(this.campaignId).subscribe({
+      next: () => {
+        this.router.navigate(['/campaign-list']);
+      },
+      error: () => {
+        console.error('Failed to delete campaign');
+      }
+    });
   }
 
   // ================= NAVIGATION =================
@@ -92,5 +119,11 @@ export class CampaignDetailsComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/campaign-list']);
+  }
+
+  getSentimentClass(sentiment: string): string {
+    if (sentiment === 'POSITIVE') return 'positive';
+    if (sentiment === 'NEGATIVE') return 'negative';
+    return 'neutral';
   }
 }

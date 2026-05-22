@@ -557,6 +557,26 @@
 }
 
 /* ================= RESPONSIVE ================= */
+.admin-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.link-btn {
+  color: #0F52D6;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 0;
+  transition: color 0.2s;
+}
+
+.link-btn:hover {
+  color: #0B3FA8;
+  text-decoration: underline;
+}
+
 @media (max-width: 1200px) {
   .kpi-section { grid-template-columns: repeat(2, 1fr); }
   .insights-grid { grid-template-columns: 1fr; }

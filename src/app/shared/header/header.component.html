@@ -37,6 +37,10 @@
       <lucide-icon [img]="icons.users" [size]="20"></lucide-icon>
       <span>User Management</span>
     </a>
+    <a *ngIf="isAdmin()" routerLink="/scraped-posts" routerLinkActive="active" aria-label="Scraped Posts">
+      <lucide-icon [img]="icons.search" [size]="20"></lucide-icon>
+      <span>Scrap</span>
+    </a>
   </nav>
 
   <div class="sidebar-footer">
@@ -131,6 +135,10 @@
   <a *ngIf="isAdmin()" routerLink="/admin/users" routerLinkActive="active" (click)="closeMenu()">
     <lucide-icon [img]="icons.users" [size]="20"></lucide-icon>
     User Management
+  </a>
+  <a *ngIf="isAdmin()" routerLink="/scraped-posts" routerLinkActive="active" (click)="closeMenu()">
+    <lucide-icon [img]="icons.search" [size]="20"></lucide-icon>
+    Scrap
   </a>
   
   <!-- User Info in Mobile -->

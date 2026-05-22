@@ -22,8 +22,8 @@
       <button class="btn-secondary" (click)="reloadInsights()" aria-label="Refresh insights">
         &#8635; Refresh
       </button>
-      <button class="btn-primary" aria-label="Export campaign">
-        &#8681; Export
+      <button class="btn-danger" (click)="deleteCampaign()" aria-label="Delete campaign">
+        &#128465; Delete
       </button>
     </div>
   </header>
@@ -141,6 +141,22 @@
           <div class="stat-card">
             <span class="stat-value">{{ insights.reach || 0 }}</span>
             <span class="stat-label">Reach</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Campaign Comments Card -->
+      <section class="section card comments-card" *ngIf="campaignComments.length > 0">
+        <h3>Recent Comments</h3>
+        <div class="campaign-comments-list">
+          <div class="c-comment" *ngFor="let c of campaignComments.slice(0, 5)">
+            <div class="c-comment-header">
+              <span class="c-sentiment" [class]="getSentimentClass(c.sentiment)">
+                {{ c.sentiment }}
+              </span>
+              <span class="c-date">{{ c.createdAt | date:'short' }}</span>
+            </div>
+            <p class="c-text">{{ c.commentText }}</p>
           </div>
         </div>
       </section>

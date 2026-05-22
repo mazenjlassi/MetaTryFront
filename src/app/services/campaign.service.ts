@@ -51,4 +51,10 @@ export class CampaignService {
       postNumber: postNumber
     });
   }
+
+  // ================= DELETE =================
+
+  deleteCampaign(id: number) {
+    return this.http.delete(`${this.apiUrl}/campaigns/${id}`, { responseType: 'text' });
+  }
 }

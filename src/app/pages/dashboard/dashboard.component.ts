@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LucideAngularModule, FileText, Send, Lightbulb, MessageSquare, TrendingUp, Users, PenTool, Rocket, Clock, Calendar, BarChart3 } from 'lucide-angular';
+import { LucideAngularModule, FileText, Send, Lightbulb, MessageSquare, TrendingUp, Users, PenTool, Rocket, Clock, Calendar, BarChart3, Activity } from 'lucide-angular';
 import { PostsChartComponent } from './components/posts-chart/posts-chart.component';
 
 import { PostService } from '../../services/post.service';
 import { CampaignService } from '../../services/campaign.service';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
+import { PatternService } from '../../services/pattern.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -46,6 +48,12 @@ export class DashboardComponent implements OnInit {
   campaignProgress: any[] = [];
   showAdmin = false;
 
+  patternStats = {
+    totalPatterns: 0,
+    bestTopic: '',
+    bestScore: 0
+  };
+
   icons = {
     fileText: FileText,
     send: Send,
@@ -57,14 +65,16 @@ export class DashboardComponent implements OnInit {
     rocket: Rocket,
     clock: Clock,
     calendar: Calendar,
-    barChart: BarChart3
+    barChart: BarChart3,
+    activity: Activity
   };
 
   constructor(
     private postService: PostService,
     private campaignService: CampaignService,
     private authService: AuthService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private patternService: PatternService
   ) {}
 
   ngOnInit() {
@@ -96,6 +106,7 @@ export class DashboardComponent implements OnInit {
   loadAdminFeatures() {
     this.loadUserStats();
     this.loadCampaignProgress();
+    this.loadPatternStats();
   }
 
   loadTimingAnalysis() {
@@ -130,6 +141,21 @@ export class DashboardComponent implements OnInit {
     this.adminService.getCampaignsProgress(3).subscribe({
       next: (res) => { this.campaignProgress = res; },
       error: () => { this.campaignProgress = []; }
+    });
+  }
+
+  loadPatternStats() {
+    this.patternService.getAllPatterns().subscribe({
+      next: (res) => {
+        this.patternStats.totalPatterns = res.length;
+        const withScores = res.filter(p => p.avgEngagementScore != null);
+        if (withScores.length > 0) {
+          const best = withScores.reduce((a, b) => (a.avgEngagementScore > b.avgEngagementScore ? a : b));
+          this.patternStats.bestTopic = best.topic;
+          this.patternStats.bestScore = best.avgEngagementScore;
+        }
+      },
+      error: () => {}
     });
   }
 

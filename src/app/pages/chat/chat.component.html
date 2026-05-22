@@ -41,6 +41,9 @@
           <p class="preview">{{ c.lastMessage || 'No messages yet' }}</p>
         </div>
         <span *ngIf="c.unread" class="unread-badge">{{ c.unread }}</span>
+        <button class="delete-conv-btn" (click)="deleteConversation(c.id); $event.stopPropagation()" title="Delete conversation">
+          &#128465;
+        </button>
       </button>
     </div>
   </aside>

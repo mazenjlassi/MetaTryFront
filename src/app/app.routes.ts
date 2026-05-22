@@ -9,6 +9,8 @@ import { CampaignDetailsComponent } from './pages/campaign-list/campaign-details
 import { ChatComponent } from './pages/chat/chat.component';
 import { UserManagementComponent } from './pages/admin/user-management.component';
 import { CalendarComponent } from './pages/calendar/calendar.component';
+import { ScrapedPostsComponent } from './pages/scraped-posts/scraped-posts.component';
+import { PatternsComponent } from './pages/patterns/patterns.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -20,6 +22,8 @@ export const routes: Routes = [
     {path: 'campaigns/:id', component: CampaignDetailsComponent },
     {path: 'chat', component: ChatComponent },
     {path: 'admin/users', component: UserManagementComponent },
+    {path: 'scraped-posts', component: ScrapedPostsComponent },
+    {path: 'patterns', component: PatternsComponent },
     {path: 'calendar', component: CalendarComponent },
     {path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 ];

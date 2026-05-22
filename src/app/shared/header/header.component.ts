@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, LayoutDashboard, PenTool, MessageCircle, FileText, Folder, Menu, X, Sun, Moon, Users, LogOut, Calendar } from 'lucide-angular';
+import { LucideAngularModule, LayoutDashboard, PenTool, MessageCircle, FileText, Folder, Menu, X, Sun, Moon, Users, LogOut, Calendar, Search } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -24,7 +24,8 @@ export class HeaderComponent implements OnInit {
     moon: Moon,
     users: Users,
     logOut: LogOut,
-    calendar: Calendar
+    calendar: Calendar,
+    search: Search
   };
   mobileMenuOpen = false;
   isDarkMode = false;

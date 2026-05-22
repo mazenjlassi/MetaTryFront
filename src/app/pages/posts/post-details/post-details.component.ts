@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../../../services/post.service';
 import { CommentService } from '../../../services/comment.service';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-post-details',
@@ -12,7 +14,10 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './post-details.component.html',
   styleUrls: ['./post-details.component.css']
 })
-export class PostDetailsComponent implements OnInit {
+export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @ViewChild('metricsChart') chartRef!: ElementRef<HTMLCanvasElement>;
+  chart: any;
 
   post: any;
   loading = true;
@@ -25,12 +30,15 @@ export class PostDetailsComponent implements OnInit {
   comments: any[] = [];
   loadingComments = false;
   sentimentFilter = '';
+  metrics: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private service: PostService,
     private commentService: CommentService,
-    private location: Location
+    private http: HttpClient,
+    private location: Location,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -44,9 +52,9 @@ export class PostDetailsComponent implements OnInit {
           this.post = res;
           this.loading = false;
 
-          // Only load comments if published
           if (this.post.status === 'PUBLISHED') {
             this.loadComments(postId);
+            this.loadMetrics(postId);
           }
         },
         error: () => {
@@ -55,6 +63,109 @@ export class PostDetailsComponent implements OnInit {
         }
       });
     }
+  }
+
+  ngAfterViewInit() {}
+
+  ngOnDestroy() {
+    if (this.chart) {
+      this.chart.destroy();
+    }
+  }
+
+  loadMetrics(postId: number) {
+    this.http.get<any[]>(`http://localhost:8081/metrics/post/${postId}`).subscribe({
+      next: (res) => {
+        this.metrics = res || [];
+        setTimeout(() => this.buildChart(), 200);
+      },
+      error: () => {}
+    });
+  }
+
+  buildChart() {
+    if (!this.chartRef?.nativeElement || this.metrics.length < 2) return;
+    if (this.chart) this.chart.destroy();
+
+    const sorted = [...this.metrics].sort((a, b) =>
+      new Date(a.collectedAt).getTime() - new Date(b.collectedAt).getTime()
+    );
+
+    const labels = sorted.map(m =>
+      new Date(m.collectedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit' })
+    );
+    const likes = sorted.map(m => m.likes || 0);
+    const comments = sorted.map(m => m.comments || 0);
+
+    this.chart = new Chart(this.chartRef.nativeElement, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Likes',
+            data: likes,
+            borderColor: '#0F52D6',
+            backgroundColor: 'rgba(15, 82, 214, 0.15)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#0F52D6',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          },
+          {
+            label: 'Comments',
+            data: comments,
+            borderColor: '#8B5CF6',
+            backgroundColor: 'rgba(139, 92, 246, 0.15)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#8B5CF6',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { font: { size: 11 }, color: '#64748B', maxTicksLimit: 8 }
+          },
+          y: {
+            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+            ticks: { font: { size: 11 }, color: '#64748B' },
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            align: 'end',
+            labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 11 }, color: '#64748B' }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 82, 214, 0.95)',
+            titleFont: { size: 12, weight: 'bold' as any },
+            bodyFont: { size: 11 },
+            padding: 12,
+            cornerRadius: 8,
+            displayColors: true,
+            boxPadding: 6
+          }
+        },
+        animation: { duration: 1500, easing: 'easeOutQuart' }
+      }
+    });
   }
 
   // ================= COMMENTS =================
@@ -76,7 +187,7 @@ export class PostDetailsComponent implements OnInit {
   filterSentiment(sentiment: string) {
     this.sentimentFilter = sentiment;
     if (!this.post?.id) return;
-    
+
     this.loadingComments = true;
 
     if (sentiment) {
@@ -139,6 +250,18 @@ export class PostDetailsComponent implements OnInit {
       error: (err) => {
         this.saving = false;
         this.errorMessage = err?.error?.message || 'Update failed';
+      }
+    });
+  }
+
+  deletePost() {
+    if (!confirm('Delete this post permanently?')) return;
+    this.service.deletePost(this.post.id).subscribe({
+      next: () => {
+        this.router.navigate(['/posts']);
+      },
+      error: () => {
+        this.errorMessage = 'Failed to delete post';
       }
     });
   }

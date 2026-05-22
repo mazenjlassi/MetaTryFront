@@ -98,6 +98,21 @@ export class ChatComponent implements OnInit {
     this.newMessage = '';
   }
 
+  deleteConversation(id: number) {
+    if (!confirm('Delete this conversation and all its messages?')) return;
+    this.chatService.deleteConversation(id).subscribe({
+      next: () => {
+        this.conversations = this.conversations.filter(c => c.id !== id);
+        if (this.selectedConversationId === id) {
+          this.selectedConversationId = null!;
+          this.messages = [];
+          this.conclusion = '';
+        }
+      },
+      error: () => {}
+    });
+  }
+
   getSelectedConversation() {
     return this.conversations.find(c => c.id === this.selectedConversationId);
   }

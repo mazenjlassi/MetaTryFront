@@ -18,11 +18,18 @@
         </div>
       </div>
     </div>
-    <div class="header-actions" *ngIf="canUpdate()">
-      <button 
-        class="btn-primary" 
+    <div class="header-actions">
+      <button
+        class="btn-danger"
+        (click)="deletePost()"
+        *ngIf="post?.status !== 'PUBLISHED'"
+      >
+        &#128465; Delete
+      </button>
+      <button
+        class="btn-primary"
         (click)="openEdit()"
-        [disabled]="editMode"
+        [disabled]="editMode || post?.status === 'PUBLISHED'"
       >
         <span *ngIf="!editMode">&#9998; Edit Post</span>
         <span *ngIf="editMode">Editing...</span>
@@ -71,7 +78,7 @@
 
       <!-- DISPLAY MODE -->
       <ng-container *ngIf="!editMode">
-        
+
         <!-- Overview Card -->
         <section class="section card overview-card" *ngIf="post?.imageUrl">
           <h3>Post Image</h3>
@@ -92,34 +99,42 @@
           </div>
         </section>
 
+        <!-- Metrics Chart -->
+        <section class="section card chart-section" *ngIf="post?.status === 'PUBLISHED' && metrics.length >= 2">
+          <h3>Performance Over Time</h3>
+          <div class="chart-container">
+            <canvas #metricsChart></canvas>
+          </div>
+        </section>
+
         <!-- Comments Section -->
         <section class="section card comments-section" *ngIf="post?.status === 'PUBLISHED'">
           <h3>Comments</h3>
-          
+
           <!-- Filters -->
           <div class="comment-filters">
-            <button 
-              class="filter-btn" 
+            <button
+              class="filter-btn"
               [class.active]="!sentimentFilter"
               (click)="filterSentiment('')"
             >
               All
             </button>
-            <button 
+            <button
               class="filter-btn positive"
               [class.active]="sentimentFilter === 'POSITIVE'"
               (click)="filterSentiment('POSITIVE')"
             >
               Positive
             </button>
-            <button 
+            <button
               class="filter-btn negative"
               [class.active]="sentimentFilter === 'NEGATIVE'"
               (click)="filterSentiment('NEGATIVE')"
             >
               Negative
             </button>
-            <button 
+            <button
               class="filter-btn neutral"
               [class.active]="sentimentFilter === 'NEUTRAL'"
               (click)="filterSentiment('NEUTRAL')"
@@ -138,8 +153,8 @@
           </div>
 
           <div class="comments-list" *ngIf="!loadingComments && comments.length > 0">
-            <article 
-              *ngFor="let comment of comments" 
+            <article
+              *ngFor="let comment of comments"
               class="comment-card"
             >
               <div class="comment-header">

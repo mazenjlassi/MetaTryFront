@@ -178,6 +178,31 @@
 
   </div>
 
+  <!-- Admin: Patterns Overview -->
+  <div class="admin-panel" *ngIf="showAdmin">
+    <div class="panel-header">
+      <h3>Patterns Overview</h3>
+    </div>
+    <div class="admin-cards">
+      <div class="admin-card">
+        <span class="admin-num">{{ patternStats.totalPatterns }}</span>
+        <span class="admin-label">Total Patterns</span>
+      </div>
+      <div class="admin-card active-card">
+        <span class="admin-num">{{ patternStats.bestScore > 0 ? (patternStats.bestScore | number:'1.2') : '-' }}</span>
+        <span class="admin-label">Best Score</span>
+      </div>
+      <div class="admin-card">
+        <span class="admin-num">{{ patternStats.bestTopic || '-' }}</span>
+        <span class="admin-label">Best Topic</span>
+      </div>
+    </div>
+    <div class="admin-links">
+      <a class="link-btn" routerLink="/scraped-posts">Scraped Posts &rarr;</a>
+      <a class="link-btn" routerLink="/patterns">Patterns &rarr;</a>
+    </div>
+  </div>
+
   <!-- Admin: Campaign Progress -->
   <div class="progress-panel" *ngIf="showAdmin && campaignProgress.length > 0">
     <div class="box-header">

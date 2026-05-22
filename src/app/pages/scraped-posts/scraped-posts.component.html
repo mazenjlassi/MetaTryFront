@@ -1,0 +1,149 @@
+<div class="scraped-page">
+
+  <header class="page-header">
+    <h1>Scraped Posts</h1>
+    <span class="admin-badge">Admin Only</span>
+  </header>
+
+  <div class="companies-bar">
+    <button
+      *ngFor="let c of companies"
+      class="company-pill"
+      [class.active]="c === selectedCompany"
+      (click)="selectCompany(c)"
+    >
+      {{ c }}
+    </button>
+    <div class="company-input-wrap" *ngIf="!showCompanyInput; else inputTemplate">
+      <button class="company-pill add-btn" (click)="toggleCompanyInput()">+ Add</button>
+    </div>
+    <ng-template #inputTemplate>
+      <div class="company-input-wrap inline">
+        <input
+          class="company-input"
+          type="text"
+          [(ngModel)]="newCompanyName"
+          placeholder="Company name..."
+          (keyup.enter)="addNewCompany()"
+          (keyup.escape)="toggleCompanyInput()"
+          autofocus
+        />
+        <button class="btn-primary small" (click)="addNewCompany()">Add</button>
+        <button class="btn-secondary small" (click)="toggleCompanyInput()">Cancel</button>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="error" *ngIf="error">{{ error }}</div>
+
+  <div *ngIf="!selectedCompany" class="empty-state">
+    <p>Select a company to view scraped posts</p>
+  </div>
+
+  <div *ngIf="selectedCompany" class="posts-section">
+    <div class="section-header">
+      <h3>Posts for "{{ selectedCompany }}"</h3>
+      <span class="count-badge">{{ scrapedPosts.length }} posts</span>
+      <button class="btn-primary" (click)="openAddModal()">+ Add Post</button>
+    </div>
+
+    <div *ngIf="loading" class="loading">Loading...</div>
+
+    <div *ngIf="!loading && scrapedPosts.length === 0" class="empty-state">
+      <p>No scraped posts for this company yet</p>
+      <button class="btn-primary" (click)="openAddModal()">Add First Post</button>
+    </div>
+
+    <div *ngIf="!loading && scrapedPosts.length > 0" class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Content</th>
+            <th>Topic</th>
+            <th>Date</th>
+            <th>Used</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let post of scrapedPosts">
+            <td>
+              <span class="platform-badge" [style.background]="getPlatformColor(post.platform)">
+                {{ post.platform }}
+              </span>
+            </td>
+            <td class="content-cell">{{ post.postText }}</td>
+            <td>{{ post.topic || '-' }}</td>
+            <td>{{ post.postedAt || (post.scrapedAt | date:'shortDate') || '-' }}</td>
+            <td>
+              <span class="used-badge" [class.used]="post.usedForPattern">
+                {{ post.usedForPattern ? 'Yes' : 'No' }}
+              </span>
+            </td>
+            <td>
+              <button class="btn-icon danger" (click)="deletePost(post.id)" title="Delete">&#128465;</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add Post Modal -->
+  <div class="modal-overlay" *ngIf="showAddModal" (click)="showAddModal = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Add Scraped Post</h3>
+        <button class="close-btn" (click)="showAddModal = false">&#10005;</button>
+      </div>
+
+      <form class="modal-form" (ngSubmit)="createPost()">
+        <div class="form-group">
+          <label>Company</label>
+          <select [(ngModel)]="newPost.companyName" name="company" required>
+            <option value="">Select company</option>
+            <option *ngFor="let c of companies" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Platform</label>
+          <select [(ngModel)]="newPost.platform" name="platform" required>
+            <option value="LINKEDIN">LinkedIn</option>
+            <option value="INSTAGRAM">Instagram</option>
+            <option value="FACEBOOK">Facebook</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Content</label>
+          <textarea [(ngModel)]="newPost.postText" name="postText" rows="4" placeholder="Post content..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Topic</label>
+          <input type="text" [(ngModel)]="newPost.topic" name="topic" placeholder="e.g. AI, Marketing, Tech" />
+        </div>
+
+        <div class="form-group">
+          <label>Post URL <span class="optional">(optional)</span></label>
+          <input type="url" [(ngModel)]="newPost.postUrl" name="postUrl" placeholder="https://..." />
+        </div>
+
+        <div class="form-group">
+          <label>Posted At <span class="optional">(optional)</span></label>
+          <input type="date" [(ngModel)]="newPost.postedAt" name="postedAt" />
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="showAddModal = false">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="!newPost.postText || !newPost.companyName">
+            Create Post
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
