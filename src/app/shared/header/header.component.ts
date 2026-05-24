@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, LayoutDashboard, PenTool, MessageCircle, FileText, Folder, Menu, X, Sun, Moon, Users, LogOut, Calendar, Search } from 'lucide-angular';
+import { LucideAngularModule, LayoutDashboard, PenTool, MessageCircle, FileText, Folder, Menu, X, Sun, Moon, Users, LogOut, Calendar, Search, PanelLeftClose, PanelLeftOpen } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
+import { SidebarStateService } from '../sidebar-state.service';
 
 @Component({
   selector: 'app-header',
@@ -25,20 +26,32 @@ export class HeaderComponent implements OnInit {
     users: Users,
     logOut: LogOut,
     calendar: Calendar,
-    search: Search
+    search: Search,
+    panelLeftClose: PanelLeftClose,
+    panelLeftOpen: PanelLeftOpen
   };
   mobileMenuOpen = false;
   isDarkMode = false;
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    public sidebarState: SidebarStateService
   ) {}
 
   ngOnInit(): void {
+    this.sidebarState.init();
     const saved = localStorage.getItem('theme');
     this.isDarkMode = saved === 'dark';
     this.applyTheme();
+  }
+
+  toggleSidebar(): void {
+    this.sidebarState.toggle();
+  }
+
+  get sidebarCollapsed(): boolean {
+    return this.sidebarState.collapsed;
   }
 
   toggleMenu(): void {

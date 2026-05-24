@@ -47,7 +47,7 @@
 
 .post-row .content .text {
   font-size: var(--text-sm);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-medium);
   line-height: 1.4;
   color: var(--text-primary);
   margin: 0;
@@ -61,7 +61,7 @@
 
 .post-row .content .date {
   font-size: var(--text-xs);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-medium);
   color: var(--text-secondary);
   text-transform: uppercase;
 }
@@ -73,7 +73,7 @@
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-medium);
   color: var(--text-primary);
   width: fit-content;
 }
@@ -97,7 +97,7 @@
   align-items: center;
   gap: var(--space-xs);
   font-size: var(--text-sm);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-medium);
   color: var(--text-primary);
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-full);

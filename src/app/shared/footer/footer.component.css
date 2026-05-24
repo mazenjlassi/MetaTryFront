@@ -34,7 +34,7 @@
 .footer-col h4 {
   color: var(--white);
   font-size: var(--text-sm);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-semibold);
   margin-bottom: var(--space-lg);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -202,7 +202,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-bold);
   font-size: var(--text-lg);
   letter-spacing: 0.5px;
 }

@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../../services/post.service';
 import { Router } from '@angular/router';
+import { ToastService } from '../../shared/toast/toast.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { LucideAngularModule, Eye, Clock, CheckCircle, Send, FileText, Image, Search, Loader2 } from 'lucide-angular';
 
 @Component({
   selector: 'app-posts',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.css']
 })
@@ -33,7 +36,9 @@ export class PostsComponent implements OnInit {
 
   constructor(
     private service: PostService,
-    private router: Router
+    private router: Router,
+    private toast: ToastService,
+    private confirm: ConfirmDialogService
   ) {}
 
   ngOnInit() {
@@ -82,17 +87,29 @@ export class PostsComponent implements OnInit {
     return post.permanent || post.status !== 'PUBLISHED';
   }
 
-  postNow(post: any) {
-    if (!confirm('Post this to social media now?')) return;
+  async postNow(post: any) {
+    const ok = await this.confirm.confirm({ title: 'Publish Post', message: 'Post this to social media now?' });
+    if (!ok) return;
 
     this.service.publishPost(post.id).subscribe({
       next: () => {
         post.status = 'PUBLISHED';
-        alert('Posted successfully!');
+        this.toast.success('Posted successfully!');
       },
       error: () => {
-        alert('Failed to post');
+        this.toast.error('Failed to post');
       }
     });
   }
+
+  icons = {
+    eye: Eye,
+    clock: Clock,
+    checkCircle: CheckCircle,
+    send: Send,
+    fileText: FileText,
+    image: Image,
+    search: Search,
+    loader2: Loader2
+  };
 }

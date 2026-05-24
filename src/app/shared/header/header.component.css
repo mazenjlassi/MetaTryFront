@@ -1,7 +1,6 @@
 /* ============================================
    SIDEBAR - LUXURY DARK MODE
-   Permanent 280px Width - NO Collapse
-   Supports Light & Dark Mode
+   Supports Light & Dark Mode + Collapsible
    ============================================ */
 
 .sidebar { display: none; }
@@ -206,7 +205,7 @@ body:not(.dark-mode) .mobile-nav {
 }
 
 /* ============================================
-   DESKTOP SIDEBAR - Always 280px
+   DESKTOP SIDEBAR - Collapsible 280px / 72px
    ============================================ */
 
 @media (min-width: 768px) {
@@ -225,6 +224,12 @@ body:not(.dark-mode) .mobile-nav {
     z-index: 1000;
     box-shadow: 6px 0 30px rgba(0,0,0,0.35);
     border-right: 1px solid rgba(255,255,255,0.06);
+    transition: width 0.3s ease;
+    overflow: hidden;
+  }
+
+  .sidebar.collapsed {
+    width: 72px;
   }
 
   /* Light mode sidebar */
@@ -238,6 +243,13 @@ body:not(.dark-mode) .mobile-nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
+    min-height: 72px;
+  }
+
+  .sidebar.collapsed .sidebar-header {
+    padding: 24px 12px;
+    justify-content: center;
   }
 
   body:not(.dark-mode) .sidebar-header {
@@ -245,9 +257,49 @@ body:not(.dark-mode) .mobile-nav {
   }
 
   .sidebar-header .logo { flex: 1; }
+  .sidebar.collapsed .sidebar-header .logo { flex: 0; }
   .logo img { height: 40px; width: auto; }
+  
+  .logo-mini {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary), #60A5FA);
+    border-radius: 10px;
+    color: var(--white);
+    font-weight: var(--font-bold);
+    font-size: var(--text-sm);
+  }
 
-  .collapse-btn { display: none !important; }
+  .sidebar-collapse-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.05);
+    border: none;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 6px;
+    min-width: 32px;
+    min-height: 32px;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .sidebar.collapsed .sidebar-collapse-btn {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .sidebar-collapse-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--white);
+  }
 
   .sidebar-nav {
     flex: 1;
@@ -256,6 +308,11 @@ body:not(.dark-mode) .mobile-nav {
     flex-direction: column;
     gap: var(--space-xs);
     overflow-y: auto;
+  }
+
+  .sidebar.collapsed .sidebar-nav {
+    padding: 24px 12px;
+    align-items: center;
   }
 
   .sidebar-nav a {
@@ -275,11 +332,23 @@ body:not(.dark-mode) .mobile-nav {
     overflow: hidden;
   }
 
+  .sidebar.collapsed .sidebar-nav a {
+    justify-content: center;
+    padding: 14px 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+  }
+
   .sidebar-nav a:hover {
     background: rgba(255,255,255,0.05);
     color: var(--white);
     transform: translateX(4px);
     box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+  }
+
+  .sidebar.collapsed .sidebar-nav a:hover {
+    transform: none;
   }
 
   .sidebar-nav a.active {
@@ -298,13 +367,54 @@ body:not(.dark-mode) .mobile-nav {
     transform: scale(1.1);
   }
 
+  .sidebar.collapsed .sidebar-nav a:hover lucide-icon {
+    transform: scale(1.15);
+  }
+
   .sidebar-footer {
     padding: 24px 18px;
     border-top: 1px solid rgba(255,255,255,0.06);
   }
 
+  .sidebar.collapsed .sidebar-footer {
+    padding: 24px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
   body:not(.dark-mode) .sidebar-footer {
     border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .sidebar.collapsed .user-info {
+    padding: 8px;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+  }
+
+  .sidebar.collapsed .user-name {
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
+  }
+
+  .sidebar.collapsed .theme-toggle {
+    padding: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    margin-bottom: 0;
+  }
+
+  .sidebar.collapsed .logout-btn {
+    padding: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    margin-bottom: 0;
   }
 
   .brand {

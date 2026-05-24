@@ -14,7 +14,9 @@
   <!-- FILTERS -->
   <div class="filters-section">
     <div class="search-box">
-      <span class="search-icon">&#128269;</span>
+      <span class="search-icon">
+        <lucide-icon [img]="icons.search" [size]="16"></lucide-icon>
+      </span>
       <input 
         type="text" 
         placeholder="Search campaigns..." 
@@ -44,13 +46,15 @@
 
   <!-- ERROR STATE -->
   <div *ngIf="error" class="error-state">
-    <span>&#9888;</span>
+    <lucide-icon [img]="icons.alertTriangle" [size]="24"></lucide-icon>
     <p>{{ error }}</p>
   </div>
 
   <!-- EMPTY STATE -->
   <div *ngIf="!loading && !error && filteredCampaigns.length === 0" class="empty-state">
-    <div class="empty-icon">&#128193;</div>
+    <div class="empty-icon">
+      <lucide-icon [img]="icons.folderOpen" [size]="48"></lucide-icon>
+    </div>
     <h3>No campaigns yet</h3>
     <p>Create your first campaign to get started</p>
     <button class="btn-primary" routerLink="/campaigns">
@@ -93,7 +97,8 @@
           (click)="openCampaign($event, c.id)"
           aria-label="Open campaign"
         >
-          &#8599; Open
+          <lucide-icon [img]="icons.arrowUpRight" [size]="16"></lucide-icon>
+          Open
         </button>
       </div>
     </article>

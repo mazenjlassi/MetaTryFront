@@ -1,19 +1,39 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, ArrowLeft, RefreshCw, Trash2, FileText, Heart, MessageCircle, Eye, Edit3, Send, TrendingUp, TrendingDown, Minus, Lightbulb, Sparkles, Check } from 'lucide-angular';
 import { CampaignService } from '../../../services/campaign.service';
 import { PostService } from '../../../services/post.service';
 import { InsightService } from '../../../services/insight.service';
 import { CommentService } from '../../../services/comment.service';
+import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-campaign-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './campaign-details.component.html',
   styleUrls: ['./campaign-details.component.css']
 })
 export class CampaignDetailsComponent implements OnInit {
+
+  icons = {
+    arrowLeft: ArrowLeft,
+    refreshCw: RefreshCw,
+    trash2: Trash2,
+    fileText: FileText,
+    heart: Heart,
+    messageCircle: MessageCircle,
+    eye: Eye,
+    edit3: Edit3,
+    send: Send,
+    trendingUp: TrendingUp,
+    trendingDown: TrendingDown,
+    minus: Minus,
+    lightbulb: Lightbulb,
+    sparkles: Sparkles,
+    check: Check
+  };
 
   campaign: any = null;
   posts: any[] = [];
@@ -30,7 +50,8 @@ export class CampaignDetailsComponent implements OnInit {
     private campaignService: CampaignService,
     private postService: PostService,
     private insightService: InsightService,
-    private commentService: CommentService
+    private commentService: CommentService,
+    private confirm: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -87,8 +108,9 @@ export class CampaignDetailsComponent implements OnInit {
 
   // ================= DELETE =================
 
-  deleteCampaign() {
-    if (!confirm('Delete this campaign and all its posts permanently?')) return;
+  async deleteCampaign() {
+    const ok = await this.confirm.confirm({ title: 'Delete Campaign', message: 'Delete this campaign and all its posts permanently?' });
+    if (!ok) return;
     this.campaignService.deleteCampaign(this.campaignId).subscribe({
       next: () => {
         this.router.navigate(['/campaign-list']);

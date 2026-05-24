@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LucideAngularModule, FileText, Send, Lightbulb, MessageSquare, TrendingUp, Users, PenTool, Rocket, Clock, Calendar, BarChart3, Activity } from 'lucide-angular';
+import { LucideAngularModule, FileText, Send, Lightbulb, MessageSquare, TrendingUp, Users, PenTool, Rocket, Clock, Calendar, BarChart3, Activity, ArrowRight } from 'lucide-angular';
 import { PostsChartComponent } from './components/posts-chart/posts-chart.component';
 
 import { PostService } from '../../services/post.service';
@@ -66,7 +66,8 @@ export class DashboardComponent implements OnInit {
     clock: Clock,
     calendar: Calendar,
     barChart: BarChart3,
-    activity: Activity
+    activity: Activity,
+    arrowRight: ArrowRight
   };
 
   constructor(

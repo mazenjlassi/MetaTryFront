@@ -4,7 +4,8 @@
   <header class="detail-header">
     <div class="header-left">
       <button class="back-btn" (click)="goBack()" aria-label="Go back">
-        &#8592; Back
+        <lucide-icon [img]="icons.arrowLeft" [size]="16"></lucide-icon>
+        Back
       </button>
       <div class="header-info">
         <h1>{{ campaign?.name }}</h1>
@@ -20,10 +21,12 @@
     </div>
     <div class="header-actions">
       <button class="btn-secondary" (click)="reloadInsights()" aria-label="Refresh insights">
-        &#8635; Refresh
+        <lucide-icon [img]="icons.refreshCw" [size]="16"></lucide-icon>
+        Refresh
       </button>
       <button class="btn-danger" (click)="deleteCampaign()" aria-label="Delete campaign">
-        &#128465; Delete
+        <lucide-icon [img]="icons.trash2" [size]="16"></lucide-icon>
+        Delete
       </button>
     </div>
   </header>
@@ -40,7 +43,7 @@
 
         <!-- Empty State -->
         <div *ngIf="posts.length === 0" class="empty-state">
-          <span>&#128196;</span>
+          <lucide-icon [img]="icons.fileText" [size]="32"></lucide-icon>
           <p>No posts yet</p>
         </div>
 
@@ -64,21 +67,25 @@
             <p class="preview">{{ post.content }}</p>
             <div class="post-metrics">
               <div class="metric">
-                <span>&#10084;</span>
+                <lucide-icon [img]="icons.heart" [size]="14"></lucide-icon>
                 <span>{{ post.likes || 0 }}</span>
               </div>
               <div class="metric">
-                <span>&#128172;</span>
+                <lucide-icon [img]="icons.messageCircle" [size]="14"></lucide-icon>
                 <span>{{ post.commentsCount || 0 }}</span>
               </div>
               <div class="metric">
-                <span>&#128257;</span>
+                <lucide-icon [img]="icons.eye" [size]="14"></lucide-icon>
                 <span>{{ post.shares || 0 }}</span>
               </div>
             </div>
             <div class="card-actions">
-              <button class="action-btn" (click)="editPost(post); $event.stopPropagation()" aria-label="Edit post">&#9998;</button>
-              <button class="action-btn primary" (click)="publishPost(post); $event.stopPropagation()" aria-label="Publish post">&#10148;</button>
+              <button class="action-btn" (click)="editPost(post); $event.stopPropagation()" aria-label="Edit post">
+                <lucide-icon [img]="icons.edit3" [size]="16"></lucide-icon>
+              </button>
+              <button class="action-btn primary" (click)="publishPost(post); $event.stopPropagation()" aria-label="Publish post">
+                <lucide-icon [img]="icons.send" [size]="16"></lucide-icon>
+              </button>
             </div>
           </article>
         </div>
@@ -93,9 +100,15 @@
       <section class="section card sentiment-card">
         <h3>Sentiment</h3>
         <div class="sentiment-value" [attr.data-sentiment]="insights.overallSentiment">
-          <span class="sentiment-icon" *ngIf="insights.overallSentiment === 'positive'">&#128200;</span>
-          <span class="sentiment-icon" *ngIf="insights.overallSentiment === 'negative'">&#128201;</span>
-          <span class="sentiment-icon" *ngIf="insights.overallSentiment === 'neutral'">&#8211;</span>
+          <span class="sentiment-icon" *ngIf="insights.overallSentiment === 'positive'">
+            <lucide-icon [img]="icons.trendingUp" [size]="24"></lucide-icon>
+          </span>
+          <span class="sentiment-icon" *ngIf="insights.overallSentiment === 'negative'">
+            <lucide-icon [img]="icons.trendingDown" [size]="24"></lucide-icon>
+          </span>
+          <span class="sentiment-icon" *ngIf="insights.overallSentiment === 'neutral'">
+            <lucide-icon [img]="icons.minus" [size]="24"></lucide-icon>
+          </span>
           <span class="sentiment-text">{{ insights.overallSentiment }}</span>
         </div>
       </section>
@@ -108,16 +121,17 @@
 
       <!-- Advice Card -->
       <section class="section card advice-card" *ngIf="insights.advice">
-        <h3>&#128161; Advice</h3>
+        <h3><lucide-icon [img]="icons.lightbulb" [size]="16"></lucide-icon> Advice</h3>
         <p>{{ insights.advice }}</p>
       </section>
 
       <!-- Ideas Card -->
       <section class="section card ideas-card" *ngIf="insights.ideas?.length">
-        <h3>&#10024; Ideas</h3>
+        <h3><lucide-icon [img]="icons.sparkles" [size]="16"></lucide-icon> Ideas</h3>
         <ul class="ideas-list">
           <li *ngFor="let idea of insights.ideas.slice(0, 5)">
-            &#10004; {{ idea }}
+            <lucide-icon [img]="icons.check" [size]="14"></lucide-icon>
+            {{ idea }}
           </li>
         </ul>
       </section>

@@ -31,7 +31,8 @@
     <div class="actions-bar">
       <div class="actions-left">
         <button class="btn-primary" (click)="runBatchAnalysis()" [disabled]="batchResult === 'Running...'">
-          &#9654; Run Batch Analysis
+          <lucide-icon [img]="icons.play" [size]="16"></lucide-icon>
+          Run Batch Analysis
         </button>
       </div>
       <div class="batch-result" *ngIf="batchResult">
@@ -46,10 +47,10 @@
         <span class="count-badge">{{ patterns.length }} patterns</span>
       </div>
 
-      <div *ngIf="loading" class="loading">Loading...</div>
+      <div *ngIf="loading"><app-loading-skeleton type="card" [count]="3"></app-loading-skeleton></div>
 
       <div *ngIf="!loading && patterns.length === 0" class="empty-state">
-        <p>No patterns yet. Run a batch analysis to extract patterns from scraped posts.</p>
+        <app-empty-state icon="file-x" heading="No patterns" message="No patterns yet. Run a batch analysis to extract patterns from scraped posts."></app-empty-state>
       </div>
 
       <div *ngIf="!loading && patterns.length > 0" class="patterns-list">
@@ -71,8 +72,12 @@
             </div>
             <div class="pattern-advice">{{ p.performanceAdvice ? (p.performanceAdvice.length > 40 ? p.performanceAdvice.slice(0,40) + '...' : p.performanceAdvice) : '-' }}</div>
             <div class="pattern-actions">
-              <button class="btn-icon" (click)="deletePattern(p.id); $event.stopPropagation()" title="Delete">&#128465;</button>
-              <span class="expand-icon">{{ expandedId === p.id ? '&#9650;' : '&#9660;' }}</span>
+              <button class="btn-icon" (click)="deletePattern(p.id); $event.stopPropagation()" title="Delete">
+                <lucide-icon [img]="icons.trash2" [size]="16"></lucide-icon>
+              </button>
+              <span class="expand-icon">
+                <lucide-icon [img]="expandedId === p.id ? icons.chevronUp : icons.chevronDown" [size]="16"></lucide-icon>
+              </span>
             </div>
           </div>
 

@@ -2,56 +2,49 @@
 
   <header class="page-header">
     <h1>Scraped Posts</h1>
-    <span class="admin-badge">Admin Only</span>
   </header>
 
+  <!-- Company Profiles Bar -->
   <div class="companies-bar">
-    <button
-      *ngFor="let c of companies"
-      class="company-pill"
-      [class.active]="c === selectedCompany"
-      (click)="selectCompany(c)"
-    >
-      {{ c }}
-    </button>
-    <div class="company-input-wrap" *ngIf="!showCompanyInput; else inputTemplate">
-      <button class="company-pill add-btn" (click)="toggleCompanyInput()">+ Add</button>
+    <div class="company-pill" *ngFor="let c of companies"
+      [class.active]="c.companyName === selectedCompany"
+      (click)="selectCompany(c.companyName)">
+      <span class="pill-name" [routerLink]="'/company/' + c.companyName">{{ c.companyName }}</span>
+      <button class="pill-delete" (click)="deleteCompany(c); $event.stopPropagation()" title="Delete company">
+        <lucide-icon [img]="icons.x" [size]="12"></lucide-icon>
+      </button>
     </div>
-    <ng-template #inputTemplate>
-      <div class="company-input-wrap inline">
-        <input
-          class="company-input"
-          type="text"
-          [(ngModel)]="newCompanyName"
-          placeholder="Company name..."
-          (keyup.enter)="addNewCompany()"
-          (keyup.escape)="toggleCompanyInput()"
-          autofocus
-        />
-        <button class="btn-primary small" (click)="addNewCompany()">Add</button>
-        <button class="btn-secondary small" (click)="toggleCompanyInput()">Cancel</button>
-      </div>
-    </ng-template>
+    <button class="company-pill add-btn" (click)="openCompanyModal()">+ Add</button>
   </div>
 
   <div class="error" *ngIf="error">{{ error }}</div>
 
   <div *ngIf="!selectedCompany" class="empty-state">
-    <p>Select a company to view scraped posts</p>
+    <app-empty-state icon="inbox" heading="No company selected" message="Add a company profile to get started">
+      <button class="btn-primary" (click)="openCompanyModal()">+ Add Company</button>
+    </app-empty-state>
   </div>
 
   <div *ngIf="selectedCompany" class="posts-section">
     <div class="section-header">
       <h3>Posts for "{{ selectedCompany }}"</h3>
       <span class="count-badge">{{ scrapedPosts.length }} posts</span>
-      <button class="btn-primary" (click)="openAddModal()">+ Add Post</button>
+      <div class="header-actions">
+        <button class="btn-secondary" (click)="launchScraper()" [disabled]="scraperLoading">
+          <lucide-icon *ngIf="!scraperLoading" [img]="icons.search" [size]="16"></lucide-icon>
+          <lucide-icon *ngIf="scraperLoading" [img]="icons.loader2" [size]="16" class="spin"></lucide-icon>
+          {{ scraperLoading ? 'Scraping...' : 'Launch Scraper' }}
+        </button>
+        <button class="btn-primary" (click)="openAddModal()">+ Add Post</button>
+      </div>
     </div>
 
-    <div *ngIf="loading" class="loading">Loading...</div>
+    <div *ngIf="loading"><app-loading-skeleton type="table-row" [count]="5"></app-loading-skeleton></div>
 
     <div *ngIf="!loading && scrapedPosts.length === 0" class="empty-state">
-      <p>No scraped posts for this company yet</p>
-      <button class="btn-primary" (click)="openAddModal()">Add First Post</button>
+      <app-empty-state icon="search-x" heading="No scraped posts" message="No scraped posts for this company yet">
+        <button class="btn-primary" (click)="openAddModal()">Add First Post</button>
+      </app-empty-state>
     </div>
 
     <div *ngIf="!loading && scrapedPosts.length > 0" class="table-wrap">
@@ -82,7 +75,9 @@
               </span>
             </td>
             <td>
-              <button class="btn-icon danger" (click)="deletePost(post.id)" title="Delete">&#128465;</button>
+              <button class="btn-icon danger" (click)="deletePost(post.id)" title="Delete">
+                <lucide-icon [img]="icons.trash2" [size]="16"></lucide-icon>
+              </button>
             </td>
           </tr>
         </tbody>
@@ -95,7 +90,9 @@
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>Add Scraped Post</h3>
-        <button class="close-btn" (click)="showAddModal = false">&#10005;</button>
+        <button class="close-btn" (click)="showAddModal = false">
+          <lucide-icon [img]="icons.x" [size]="16"></lucide-icon>
+        </button>
       </div>
 
       <form class="modal-form" (ngSubmit)="createPost()">
@@ -103,7 +100,7 @@
           <label>Company</label>
           <select [(ngModel)]="newPost.companyName" name="company" required>
             <option value="">Select company</option>
-            <option *ngFor="let c of companies" [value]="c">{{ c }}</option>
+            <option *ngFor="let c of companies" [value]="c.companyName">{{ c.companyName }}</option>
           </select>
         </div>
 
@@ -122,11 +119,6 @@
         </div>
 
         <div class="form-group">
-          <label>Topic</label>
-          <input type="text" [(ngModel)]="newPost.topic" name="topic" placeholder="e.g. AI, Marketing, Tech" />
-        </div>
-
-        <div class="form-group">
           <label>Post URL <span class="optional">(optional)</span></label>
           <input type="url" [(ngModel)]="newPost.postUrl" name="postUrl" placeholder="https://..." />
         </div>
@@ -140,6 +132,47 @@
           <button type="button" class="btn-secondary" (click)="showAddModal = false">Cancel</button>
           <button type="submit" class="btn-primary" [disabled]="!newPost.postText || !newPost.companyName">
             Create Post
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Company Modal -->
+  <div class="modal-overlay" *ngIf="showCompanyModal" (click)="showCompanyModal = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Add Company</h3>
+        <button class="close-btn" (click)="showCompanyModal = false">
+          <lucide-icon [img]="icons.x" [size]="16"></lucide-icon>
+        </button>
+      </div>
+
+      <form class="modal-form" (ngSubmit)="createCompany()">
+        <div class="form-group">
+          <label>Company Name</label>
+          <input type="text" [(ngModel)]="newCompany.companyName" name="companyName" placeholder="e.g. IBM" required />
+        </div>
+
+        <div class="form-group">
+          <label>Instagram URL</label>
+          <input type="url" [(ngModel)]="newCompany.instagramUrl" name="instagramUrl" placeholder="https://www.instagram.com/..." required />
+        </div>
+
+        <div class="form-group">
+          <label>Facebook URL</label>
+          <input type="url" [(ngModel)]="newCompany.facebookUrl" name="facebookUrl" placeholder="https://www.facebook.com/..." required />
+        </div>
+
+        <div class="form-group">
+          <label>LinkedIn URL</label>
+          <input type="url" [(ngModel)]="newCompany.linkedinUrl" name="linkedinUrl" placeholder="https://www.linkedin.com/company/..." required />
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="showCompanyModal = false">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="!newCompany.companyName || !newCompany.instagramUrl || !newCompany.facebookUrl || !newCompany.linkedinUrl">
+            Create Company
           </button>
         </div>
       </form>

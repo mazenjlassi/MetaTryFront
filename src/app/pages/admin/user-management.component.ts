@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, UserPlus, Trash2, Ban, Unlock, Loader2 } from 'lucide-angular';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
 
 interface User {
   id: number;
@@ -15,7 +17,7 @@ interface User {
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, EmptyStateComponent],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css']
 })
@@ -44,7 +46,10 @@ export class UserManagementComponent implements OnInit {
 
   private apiUrl = 'http://localhost:8081';
   
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private confirm: ConfirmDialogService
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -93,10 +98,9 @@ export class UserManagementComponent implements OnInit {
       });
   }
 
-  deleteUser(id: number) {
-    if (!confirm('Are you sure you want to delete this user?')) {
-      return;
-    }
+  async deleteUser(id: number) {
+    const ok = await this.confirm.confirm({ title: 'Delete User', message: 'Are you sure you want to delete this user?' });
+    if (!ok) return;
 
     this.http.delete(`${this.apiUrl}/admin/users/${id}`, { headers: this.getHeaders() })
       .subscribe({

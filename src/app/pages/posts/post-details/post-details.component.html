@@ -4,7 +4,8 @@
   <header class="detail-header">
     <div class="header-left">
       <button class="back-btn" (click)="goBack()" aria-label="Go back">
-        &#8592; Back
+        <lucide-icon [img]="icons.arrowLeft" [size]="16"></lucide-icon>
+        Back
       </button>
       <div class="header-info">
         <h1>{{ post?.title }}</h1>
@@ -24,14 +25,18 @@
         (click)="deletePost()"
         *ngIf="post?.status !== 'PUBLISHED'"
       >
-        &#128465; Delete
+        <lucide-icon [img]="icons.trash2" [size]="16"></lucide-icon>
+        Delete
       </button>
       <button
         class="btn-primary"
         (click)="openEdit()"
         [disabled]="editMode || post?.status === 'PUBLISHED'"
       >
-        <span *ngIf="!editMode">&#9998; Edit Post</span>
+        <span *ngIf="!editMode">
+          <lucide-icon [img]="icons.edit3" [size]="16"></lucide-icon>
+          Edit Post
+        </span>
         <span *ngIf="editMode">Editing...</span>
       </button>
     </div>
@@ -171,7 +176,9 @@
         <!-- Not Published Info -->
         <section class="section card info-card" *ngIf="post?.status !== 'PUBLISHED'">
           <div class="info-box">
-            <span class="info-icon">&#128161;</span>
+            <span class="info-icon">
+              <lucide-icon [img]="icons.lightbulb" [size]="20"></lucide-icon>
+            </span>
             <p>Comments will appear after the post is published</p>
           </div>
         </section>

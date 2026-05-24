@@ -3,11 +3,12 @@ import { CampaignService } from '../../services/campaign.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { LucideAngularModule, Search, AlertTriangle, FolderOpen, ArrowUpRight } from 'lucide-angular';
 
 @Component({
   selector: 'app-campaign-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, LucideAngularModule],
   templateUrl: './campaign-list.component.html',
   styleUrls: ['./campaign-list.component.css']
 })
@@ -16,6 +17,13 @@ export class CampaignListComponent implements OnInit {
   campaigns: any[] = [];
   loading = true;
   error = '';
+
+  icons = {
+    search: Search,
+    alertTriangle: AlertTriangle,
+    folderOpen: FolderOpen,
+    arrowUpRight: ArrowUpRight
+  };
 
   // ================= FILTERS =================
 

@@ -8,14 +8,20 @@ import {
 import { CommonModule } from '@angular/common';
 import { PostService } from '../../../../services/post.service';
 import Chart from 'chart.js/auto';
+import { LucideAngularModule, BarChart3 } from 'lucide-angular';
 
 @Component({
   selector: 'app-posts-chart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   template: `
     <div class="chart-container">
-      <canvas #chartCanvas></canvas>
+      <div *ngIf="empty" class="chart-empty">
+        <lucide-icon [img]="barChart3" [size]="36" class="empty-icon"></lucide-icon>
+        <p class="empty-title">No post data yet</p>
+        <p class="empty-desc">Create and publish posts to see engagement analytics here</p>
+      </div>
+      <canvas #chartCanvas [class.hidden]="empty"></canvas>
     </div>
   `,
   styles: [`
@@ -30,12 +36,46 @@ import Chart from 'chart.js/auto';
       height: 100%;
       position: relative;
     }
+    .chart-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-height: 200px;
+      text-align: center;
+      gap: 8px;
+      padding: 40px 24px;
+    }
+    .empty-icon {
+      color: rgba(255,255,255,0.12);
+      margin-bottom: 4px;
+    }
+    body:not(.dark-mode) .empty-icon {
+      color: rgba(0,0,0,0.12);
+    }
+    .empty-title {
+      margin: 0;
+      font-size: var(--text-base);
+      font-weight: var(--font-semibold);
+      color: var(--text-primary);
+    }
+    .empty-desc {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      max-width: 280px;
+      line-height: 1.5;
+    }
+    .hidden { display: none; }
   `]
 })
 export class PostsChartComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('chartCanvas') chartRef!: ElementRef<HTMLCanvasElement>;
   chart: any;
+  empty = false;
+  barChart3 = BarChart3;
 
   constructor(private postService: PostService) {}
 
@@ -54,7 +94,7 @@ export class PostsChartComponent implements AfterViewInit, OnDestroy {
 
     this.postService.getLatestPosts(20).subscribe(posts => {
       if (!posts || posts.length === 0) {
-        this.createEmptyChart();
+        this.empty = true;
         return;
       }
 
@@ -77,7 +117,7 @@ export class PostsChartComponent implements AfterViewInit, OnDestroy {
       if (hasData) {
         this.createAreaChart(labels, likes, comments);
       } else {
-        this.createEmptyChart();
+        this.empty = true;
       }
     });
   }
@@ -182,54 +222,4 @@ export class PostsChartComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  createEmptyChart() {
-    if (this.chart) {
-      this.chart.destroy();
-    }
-
-    if (!this.chartRef?.nativeElement) return;
-
-    this.chart = new Chart(this.chartRef.nativeElement, {
-      type: 'line',
-      data: {
-        labels: ['Post 1', 'Post 2', 'Post 3', 'Post 4', 'Post 5', 'Post 6', 'Post 7'],
-        datasets: [
-          {
-            label: 'Likes',
-            data: [0, 0, 0, 0, 0, 0, 0],
-            borderColor: 'rgba(15, 82, 214, 0.3)',
-            backgroundColor: 'rgba(15, 82, 214, 0.05)',
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: 'rgba(15, 82, 214, 0.3)',
-            pointRadius: 3,
-          },
-          {
-            label: 'Comments',
-            data: [0, 0, 0, 0, 0, 0, 0],
-            borderColor: 'rgba(139, 92, 246, 0.3)',
-            backgroundColor: 'rgba(139, 92, 246, 0.05)',
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: 'rgba(139, 92, 246, 0.3)',
-            pointRadius: 3,
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
-          y: { grid: { color: 'rgba(0, 0, 0, 0.05)' }, ticks: { color: '#94a3b8' }, beginAtZero: true }
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: false }
-        }
-      }
-    });
-  }
 }

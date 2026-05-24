@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, Search, MoreHorizontal, Paperclip, Smile, Send, CheckCircle, FileText, Plus, MessageSquare } from 'lucide-angular';
+import { LucideAngularModule, Search, MoreHorizontal, Paperclip, Smile, Send, CheckCircle, FileText, Plus, MessageSquare, Trash2 } from 'lucide-angular';
 import { ChatService } from '../../services/chat.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-chat',
@@ -32,10 +33,14 @@ export class ChatComponent implements OnInit {
     checkCircle: CheckCircle,
     fileText: FileText,
     plus: Plus,
-    messageSquare: MessageSquare
+    messageSquare: MessageSquare,
+    trash2: Trash2
   };
 
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private chatService: ChatService,
+    private confirm: ConfirmDialogService
+  ) {}
 
   ngOnInit() {
     this.loadConversations();
@@ -98,8 +103,9 @@ export class ChatComponent implements OnInit {
     this.newMessage = '';
   }
 
-  deleteConversation(id: number) {
-    if (!confirm('Delete this conversation and all its messages?')) return;
+  async deleteConversation(id: number) {
+    const ok = await this.confirm.confirm({ title: 'Delete Conversation', message: 'Delete this conversation and all its messages?' });
+    if (!ok) return;
     this.chatService.deleteConversation(id).subscribe({
       next: () => {
         this.conversations = this.conversations.filter(c => c.id !== id);

@@ -6,11 +6,13 @@ import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Chart from 'chart.js/auto';
+import { LucideAngularModule, ArrowLeft, Trash2, Edit3, Lightbulb } from 'lucide-angular';
+import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-post-details',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './post-details.component.html',
   styleUrls: ['./post-details.component.css']
 })
@@ -38,7 +40,8 @@ export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     private commentService: CommentService,
     private http: HttpClient,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private confirm: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -254,8 +257,9 @@ export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  deletePost() {
-    if (!confirm('Delete this post permanently?')) return;
+  async deletePost() {
+    const ok = await this.confirm.confirm({ title: 'Delete Post', message: 'Delete this post permanently?' });
+    if (!ok) return;
     this.service.deletePost(this.post.id).subscribe({
       next: () => {
         this.router.navigate(['/posts']);
@@ -289,4 +293,11 @@ export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
   goBack() {
     this.location.back();
   }
+
+  icons = {
+    arrowLeft: ArrowLeft,
+    trash2: Trash2,
+    edit3: Edit3,
+    lightbulb: Lightbulb
+  };
 }

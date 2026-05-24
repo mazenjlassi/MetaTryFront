@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Image, Loader2, FolderPlus } from 'lucide-angular';
+import { LucideAngularModule, Image, Loader2, FolderPlus, X, FileText, Edit3, Calendar, Check, Infinity, Save, Send, Trash2, AlertTriangle } from 'lucide-angular';
 
 import { CampaignService } from '../../services/campaign.service';
 import { PostService } from '../../services/post.service';
+import { ToastService } from '../../shared/toast/toast.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-campaigns',
@@ -18,7 +20,17 @@ export class CampaignsComponent implements OnInit {
   icons = {
     image: Image,
     loader2: Loader2,
-    folderPlus: FolderPlus
+    folderPlus: FolderPlus,
+    x: X,
+    fileText: FileText,
+    edit3: Edit3,
+    calendar: Calendar,
+    check: Check,
+    infinity: Infinity,
+    save: Save,
+    send: Send,
+    trash2: Trash2,
+    alertTriangle: AlertTriangle
   };
 
   // ================= FORM STATE =================
@@ -73,7 +85,9 @@ export class CampaignsComponent implements OnInit {
 
   constructor(
     private campaignService: CampaignService,
-    private postService: PostService
+    private postService: PostService,
+    private toast: ToastService,
+    private confirm: ConfirmDialogService
   ) {}
 
   ngOnInit() {
@@ -151,7 +165,7 @@ export class CampaignsComponent implements OnInit {
     }
 
     if (!this.name || !this.topic) {
-      alert('Name and topic are required');
+      this.toast.error('Name and topic are required');
       return;
     }
 
@@ -220,15 +234,16 @@ export class CampaignsComponent implements OnInit {
         error: (err) => {
           console.error(err);
           this.loading = false;
-          alert('Failed to create post');
+          this.toast.error('Failed to create post');
         }
       });
   }
 
   // ================= DELETE =================
 
-  delete(post: any) {
-    if (!confirm('Delete this post?')) return;
+  async delete(post: any) {
+    const ok = await this.confirm.confirm({ title: 'Delete Post', message: 'Delete this post permanently?' });
+    if (!ok) return;
 
     this.postService.deletePost(post.id).subscribe({
       next: () => {
@@ -279,11 +294,11 @@ export class CampaignsComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.savingPostId = null;
-        alert('Saved!');
+        this.toast.success('Saved!');
       },
       error: () => {
         this.savingPostId = null;
-        alert('Failed to save');
+        this.toast.error('Failed to save');
       }
     });
   }
@@ -298,11 +313,11 @@ export class CampaignsComponent implements OnInit {
         post.status = 'PUBLISHED';
         post.publishedAt = new Date();
         this.publishingPostId = null;
-        alert('Published!');
+        this.toast.success('Published!');
       },
       error: () => {
         this.publishingPostId = null;
-        alert('Failed to publish');
+        this.toast.error('Failed to publish');
       }
     });
   }
@@ -319,7 +334,7 @@ export class CampaignsComponent implements OnInit {
         },
         error: () => {
           this.loading = false;
-          alert('Failed to generate posts');
+          this.toast.error('Failed to generate posts');
         }
       });
       return;

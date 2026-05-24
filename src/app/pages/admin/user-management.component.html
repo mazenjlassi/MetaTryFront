@@ -103,7 +103,7 @@
     </div>
 
     <div class="empty-state" *ngIf="!loading && users.length === 0">
-      No users found
+      <app-empty-state icon="inbox" heading="No users" message="No users found. Create your first user to get started."></app-empty-state>
     </div>
   </div>
 </div>

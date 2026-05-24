@@ -24,7 +24,9 @@
     <aside class="form-panel" *ngIf="showForm">
       <div class="panel-header">
         <h2>{{ showExistingMode ? 'Add to Existing Campaign' : 'Create Campaign' }}</h2>
-        <button class="close-btn" (click)="showForm = false" aria-label="Close form">&#10005;</button>
+        <button class="close-btn" (click)="showForm = false" aria-label="Close form">
+          <lucide-icon [img]="icons.x" [size]="16"></lucide-icon>
+        </button>
       </div>
 
       <form class="campaign-form" (ngSubmit)="generate()">
@@ -154,7 +156,9 @@
 
       <!-- Empty State -->
       <div *ngIf="posts.length === 0" class="empty-state">
-        <div class="empty-icon">&#128196;</div>
+        <div class="empty-icon">
+          <lucide-icon [img]="icons.fileText" [size]="48"></lucide-icon>
+        </div>
         <h4>No posts yet</h4>
         <p *ngIf="showExistingMode && selectedExistingCampaign">No posts in this campaign yet</p>
         <p *ngIf="!showExistingMode || !selectedExistingCampaign">Create a campaign to generate AI-powered posts</p>
@@ -178,7 +182,9 @@
               <span class="platform-badge" [attr.data-platform]="post.platform">
                 {{ post.platform }}
               </span>
-              <button class="menu-btn" (click)="editPost(post)" aria-label="Edit post">&#9998;</button>
+              <button class="menu-btn" (click)="editPost(post)" aria-label="Edit post">
+                <lucide-icon [img]="icons.edit3" [size]="16"></lucide-icon>
+              </button>
             </div>
 
             <!-- Image Preview -->
@@ -202,14 +208,21 @@
                 {{ post.status }}
               </span>
               <span *ngIf="post.scheduledAt" class="schedule">
-                &#128197; {{ post.scheduledAt | date:'short' }}
+                <lucide-icon [img]="icons.calendar" [size]="14"></lucide-icon>
+                {{ post.scheduledAt | date:'short' }}
               </span>
             </div>
 
             <!-- Checkboxes Display -->
             <div class="checkbox-display">
-              <span *ngIf="post.approved" class="check-badge approved">&#10004; Approved</span>
-              <span *ngIf="post.permanent" class="check-badge permanent">&#8734; Permanent</span>
+              <span *ngIf="post.approved" class="check-badge approved">
+                <lucide-icon [img]="icons.check" [size]="14"></lucide-icon>
+                Approved
+              </span>
+              <span *ngIf="post.permanent" class="check-badge permanent">
+                <lucide-icon [img]="icons.infinity" [size]="14"></lucide-icon>
+                Permanent
+              </span>
             </div>
 
             <!-- Actions -->
@@ -219,21 +232,23 @@
                 (click)="save(post)"
                 [disabled]="savingPostId === post.id"
               >
-                &#128190; {{ savingPostId === post.id ? 'Saving...' : 'Save' }}
+                <lucide-icon [img]="icons.save" [size]="16"></lucide-icon>
+                {{ savingPostId === post.id ? 'Saving...' : 'Save' }}
               </button>
               <button 
                 class="action-btn success"
                 (click)="publishNow(post)"
                 [disabled]="!post.approved || publishingPostId === post.id"
               >
-                &#10148; {{ publishingPostId === post.id ? 'Publishing...' : 'Publish' }}
+                <lucide-icon [img]="icons.send" [size]="16"></lucide-icon>
+                {{ publishingPostId === post.id ? 'Publishing...' : 'Publish' }}
               </button>
               <button 
                 class="action-btn danger"
                 (click)="delete(post)"
                 aria-label="Delete post"
               >
-                &#128465;
+                <lucide-icon [img]="icons.trash2" [size]="16"></lucide-icon>
               </button>
             </div>
           </ng-container>
@@ -243,7 +258,9 @@
             <div class="edit-form">
               <div class="edit-header">
                 <span class="platform-badge" [attr.data-platform]="post.platform">{{ post.platform }}</span>
-                <button class="close-btn" (click)="post.editing = false" aria-label="Cancel">&#10005;</button>
+                <button class="close-btn" (click)="post.editing = false" aria-label="Cancel">
+                  <lucide-icon [img]="icons.x" [size]="16"></lucide-icon>
+                </button>
               </div>
 
               <div class="form-group">
@@ -334,7 +351,9 @@
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>Create Manual Post</h3>
-        <button class="close-btn" (click)="showManual = false" aria-label="Close">&#10005;</button>
+        <button class="close-btn" (click)="showManual = false" aria-label="Close">
+          <lucide-icon [img]="icons.x" [size]="16"></lucide-icon>
+        </button>
       </div>
 
       <form class="manual-form">
@@ -403,7 +422,8 @@
 
         <!-- Warning -->
         <div *ngIf="manualPost.platform === 'INSTAGRAM' && !previewUrl" class="warning-box">
-          &#9888; Instagram requires an image
+          <lucide-icon [img]="icons.alertTriangle" [size]="16"></lucide-icon>
+          Instagram requires an image
         </div>
 
         <!-- Submit -->
@@ -413,7 +433,8 @@
           (click)="createManualPost()"
           [disabled]="loading || (manualPost.platform === 'INSTAGRAM' && !previewUrl)"
         >
-          &#10004; {{ loading ? 'Saving...' : 'Create Post' }}
+          <lucide-icon [img]="icons.check" [size]="16"></lucide-icon>
+          {{ loading ? 'Saving...' : 'Create Post' }}
         </button>
       </form>
     </div>

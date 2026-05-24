@@ -1,69 +1,73 @@
-<!-- Desktop Sidebar - PERMANENTLY EXPANDED -->
-<aside class="sidebar">
+<!-- Desktop Sidebar -->
+<aside class="sidebar" [class.collapsed]="sidebarCollapsed">
   <div class="sidebar-header">
     <div class="logo">
-      <img src="/logo-3LMS.png" alt="MetaTry Logo" />
+      <img *ngIf="!sidebarCollapsed" src="/logo-3LMS.png" alt="MetaTry Logo" />
+      <span *ngIf="sidebarCollapsed" class="logo-mini">MT</span>
     </div>
+    <button class="sidebar-collapse-btn" (click)="toggleSidebar()" [attr.aria-label]="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'">
+      <lucide-icon [img]="sidebarCollapsed ? icons.panelLeftOpen : icons.panelLeftClose" [size]="18"></lucide-icon>
+    </button>
   </div>
 
   <nav class="sidebar-nav" aria-label="Main navigation">
     <a routerLink="/dashboard" routerLinkActive="active" aria-label="Dashboard">
       <lucide-icon [img]="icons.layoutDashboard" [size]="20"></lucide-icon>
-      <span>Dashboard</span>
+      <span *ngIf="!sidebarCollapsed">Dashboard</span>
     </a>
     <a routerLink="/campaigns" routerLinkActive="active" aria-label="Create Post">
       <lucide-icon [img]="icons.penTool" [size]="20"></lucide-icon>
-      <span>Add Post</span>
+      <span *ngIf="!sidebarCollapsed">Add Post</span>
     </a>
     <a routerLink="/chat" routerLinkActive="active" aria-label="Chat Bot">
       <lucide-icon [img]="icons.messageCircle" [size]="20"></lucide-icon>
-      <span>Chat Bot</span>
+      <span *ngIf="!sidebarCollapsed">Chat Bot</span>
     </a>
     <a routerLink="/posts" routerLinkActive="active" aria-label="Posts">
       <lucide-icon [img]="icons.fileText" [size]="20"></lucide-icon>
-      <span>Posts</span>
+      <span *ngIf="!sidebarCollapsed">Posts</span>
     </a>
     <a routerLink="/campaign-list" routerLinkActive="active" aria-label="Campaign List">
       <lucide-icon [img]="icons.folder" [size]="20"></lucide-icon>
-      <span>Campaign List</span>
+      <span *ngIf="!sidebarCollapsed">Campaign List</span>
     </a>
     <!-- Calendar - Marketing Only -->
     <a *ngIf="isMarketing()" routerLink="/calendar" routerLinkActive="active" aria-label="Calendar">
       <lucide-icon [img]="icons.calendar" [size]="20"></lucide-icon>
-      <span>Calendar</span>
+      <span *ngIf="!sidebarCollapsed">Calendar</span>
     </a>
     <!-- Admin Only -->
     <a *ngIf="isAdmin()" routerLink="/admin/users" routerLinkActive="active" aria-label="User Management">
       <lucide-icon [img]="icons.users" [size]="20"></lucide-icon>
-      <span>User Management</span>
+      <span *ngIf="!sidebarCollapsed">User Management</span>
     </a>
     <a *ngIf="isAdmin()" routerLink="/scraped-posts" routerLinkActive="active" aria-label="Scraped Posts">
       <lucide-icon [img]="icons.search" [size]="20"></lucide-icon>
-      <span>Scrap</span>
+      <span *ngIf="!sidebarCollapsed">Scrap</span>
     </a>
   </nav>
 
   <div class="sidebar-footer">
     <!-- User Info -->
     <div class="user-info">
-      <span class="user-name">{{ getUserName() }}</span>
-      <span class="user-role" *ngIf="isAdmin()">Admin</span>
+      <span class="user-name">{{ sidebarCollapsed ? (getUserName().charAt(0) || '').toUpperCase() : getUserName() }}</span>
+      <span class="user-role" *ngIf="isAdmin() && !sidebarCollapsed">Admin</span>
     </div>
     
     <!-- Theme Toggle Button -->
     <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
       <lucide-icon *ngIf="!isDarkMode" [img]="icons.moon" [size]="18"></lucide-icon>
       <lucide-icon *ngIf="isDarkMode" [img]="icons.sun" [size]="18"></lucide-icon>
-      <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
+      <span *ngIf="!sidebarCollapsed">{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
     </button>
     
     <!-- Logout Button -->
     <button class="logout-btn" (click)="logout()" aria-label="Logout">
       <lucide-icon [img]="icons.logOut" [size]="18"></lucide-icon>
-      <span>Logout</span>
+      <span *ngIf="!sidebarCollapsed">Logout</span>
     </button>
     
-    <div class="brand">
+    <div class="brand" *ngIf="!sidebarCollapsed">
       <span class="brand-name">MetaTry</span>
       <span class="brand-version">v1.0</span>
     </div>

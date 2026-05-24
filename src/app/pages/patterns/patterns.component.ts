@@ -2,11 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PatternService } from '../../services/pattern.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { LoadingSkeletonComponent } from '../../shared/loading-skeleton/loading-skeleton.component';
+import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
+import { LucideAngularModule, Play, Trash2, ChevronUp, ChevronDown } from 'lucide-angular';
 
 @Component({
   selector: 'app-patterns',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, LoadingSkeletonComponent, EmptyStateComponent],
   templateUrl: './patterns.component.html',
   styleUrls: ['./patterns.component.css']
 })
@@ -21,7 +25,10 @@ export class PatternsComponent implements OnInit {
   batchResult = '';
   unanalyzedCount = 0;
 
-  constructor(private patternService: PatternService) {}
+  constructor(
+    private patternService: PatternService,
+    private confirm: ConfirmDialogService
+  ) {}
 
   ngOnInit() {
     this.loadCompanies();
@@ -89,8 +96,9 @@ export class PatternsComponent implements OnInit {
     });
   }
 
-  deletePattern(id: number) {
-    if (!confirm('Delete this pattern?')) return;
+  async deletePattern(id: number) {
+    const ok = await this.confirm.confirm({ title: 'Delete Pattern', message: 'Delete this pattern?' });
+    if (!ok) return;
     this.patternService.deletePattern(id).subscribe({
       next: () => {
         this.patterns = this.patterns.filter(p => p.id !== id);
@@ -131,4 +139,11 @@ export class PatternsComponent implements OnInit {
     if (score >= 0.4) return 'Medium';
     return 'Low';
   }
+
+  icons = {
+    play: Play,
+    trash2: Trash2,
+    chevronUp: ChevronUp,
+    chevronDown: ChevronDown
+  };
 }

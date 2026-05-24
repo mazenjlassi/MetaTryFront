@@ -564,16 +564,22 @@
 }
 
 .link-btn {
-  color: #0F52D6;
+  color: var(--primary);
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
   padding: 4px 0;
   transition: color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .link-btn:hover {
-  color: #0B3FA8;
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 
