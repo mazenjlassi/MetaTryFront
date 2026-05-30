@@ -28,6 +28,7 @@ export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
   saving = false;
   errorMessage = '';
   successMessage = '';
+  scheduledDate: string = '';
 
   comments: any[] = [];
   loadingComments = false;
@@ -53,6 +54,7 @@ export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.service.getById(postId).subscribe({
         next: (res: any) => {
           this.post = res;
+          this.scheduledDate = this.formatDatetimeLocal(this.post.scheduledAt);
           this.loading = false;
 
           if (this.post.status === 'PUBLISHED') {
@@ -223,6 +225,14 @@ export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ================= POST =================
 
+  formatDatetimeLocal = (date: any): string => {
+    if (!date) return '';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '';
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
   canUpdate(): boolean {
     return this.post?.status !== 'PUBLISHED';
   }
@@ -241,7 +251,9 @@ export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     const payload = {
       title: this.post.title,
       content: this.post.content,
-      hashtags: this.post.hashtags
+      hashtags: this.post.hashtags,
+      approved: this.post.approved,
+      scheduledAt: this.scheduledDate ? new Date(this.scheduledDate).toISOString() : null
     };
 
     this.service.updatePost(this.post.id, payload).subscribe({

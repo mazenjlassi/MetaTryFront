@@ -64,6 +64,16 @@
             <label>Hashtags</label>
             <input type="text" [(ngModel)]="post.hashtags" class="form-input" placeholder="#AI #Marketing" />
           </div>
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="post.approved" />
+              <span>Approved</span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Scheduled At</label>
+            <input type="datetime-local" [(ngModel)]="scheduledDate" class="form-input" />
+          </div>
           <div class="image-preview" *ngIf="post.imageUrl">
             <img [src]="post.imageUrl" alt="Post image" />
             <button class="btn-secondary" (click)="generateImage()" [disabled]="generatingImage">
