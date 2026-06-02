@@ -49,6 +49,7 @@ export class PlatformChartComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy() {
     if (this.chart) {
       this.chart.destroy();
+      this.chart = null;
     }
   }
 
