@@ -46,10 +46,8 @@ export class CampaignService {
 
   // ================= GENERATE FOR EXISTING =================
 
-  generateForExisting(campaignId: number, postNumber: number) {
-    return this.http.post<any[]>(`${this.apiUrl}/campaigns/${campaignId}/generate`, {
-      postNumber: postNumber
-    });
+  generateForExisting(campaignId: number) {
+    return this.http.post<any[]>(`${this.apiUrl}/campaigns/${campaignId}/generate`, {});
   }
 
   // ================= DELETE =================
