@@ -6,7 +6,7 @@ import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Chart from 'chart.js/auto';
-import { LucideAngularModule, ArrowLeft, Trash2, Edit3, Lightbulb } from 'lucide-angular';
+import { LucideAngularModule, ArrowLeft, Trash2, Edit3, Lightbulb, AlertTriangle } from 'lucide-angular';
 import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
@@ -284,12 +284,23 @@ export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   generatingImage = false;
 
+  imagePrompt = '';
+
+  RISKY_KEYWORDS = ['face', 'person', 'people', 'human', 'hand', 'finger', 'text', 'words', 'realistic', 'photo'];
+
+  riskyKeywordsWarning = false;
+
+  checkRiskyKeywords() {
+    const lower = this.imagePrompt.toLowerCase();
+    this.riskyKeywordsWarning = this.RISKY_KEYWORDS.some(kw => lower.includes(kw));
+  }
+
   generateImage() {
     this.generatingImage = true;
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.service.generateImage(this.post.id).subscribe({
+    this.service.generateImage(this.post.id, this.imagePrompt || undefined).subscribe({
       next: (res: any) => {
         this.post.imageUrl = res.imageUrl;
         this.generatingImage = false;
@@ -310,6 +321,7 @@ export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     arrowLeft: ArrowLeft,
     trash2: Trash2,
     edit3: Edit3,
-    lightbulb: Lightbulb
+    lightbulb: Lightbulb,
+    alertTriangle: AlertTriangle
   };
 }

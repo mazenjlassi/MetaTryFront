@@ -92,22 +92,6 @@
           />
         </div>
 
-        <!-- Posts Number -->
-        <div class="form-group">
-          <label for="posts-number">AI Posts Number</label>
-          <input 
-            id="posts-number"
-            type="number"
-            [(ngModel)]="postNumber"
-            name="postNumber"
-            min="1"
-            [disabled]="showManual"
-            class="form-input"
-            aria-describedby="posts-hint"
-          />
-          <span id="posts-hint" class="hint-text">Number of posts to generate</span>
-        </div>
-
         <!-- Selected Campaign Info -->
         <div class="selected-info" *ngIf="showExistingMode && selectedExistingCampaign">
           <div class="info-item">
@@ -271,6 +255,26 @@
               <div class="form-group">
                 <label>Content</label>
                 <textarea [(ngModel)]="post.content" class="form-input" rows="4"></textarea>
+              </div>
+
+              <!-- Image Prompt -->
+              <div class="form-group">
+                <label>
+                  Image Prompt
+                  <span class="char-count">{{ (post.imagePrompt || '').length }}/500</span>
+                </label>
+                <textarea
+                  [(ngModel)]="post.imagePrompt"
+                  (input)="post.riskyKeywordsWarning = checkRiskyKeywords(post.imagePrompt)"
+                  class="form-input prompt-input"
+                  rows="2"
+                  maxlength="500"
+                  placeholder="Short keyword prompt: subject, style, lighting"
+                ></textarea>
+                <div class="warning-banner" *ngIf="post.riskyKeywordsWarning">
+                  <lucide-icon [img]="icons.alertTriangle" [size]="14"></lucide-icon>
+                  <span>Avoid: faces, hands, people, text — SDXL struggles with these</span>
+                </div>
               </div>
 
               <!-- Generate Image Button -->

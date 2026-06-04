@@ -355,6 +355,28 @@
   min-height: 120px;
 }
 
+.edit-form textarea.prompt-input {
+  min-height: 60px;
+}
+
+.char-count {
+  font-weight: normal;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  margin-left: var(--space-sm);
+}
+
+.warning-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(245, 158, 11, 0.1);
+  color: #F59E0B;
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+}
+
 .checkbox-group {
   flex-direction: row !important;
   align-items: center;

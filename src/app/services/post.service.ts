@@ -80,8 +80,10 @@ export class PostService {
     });
   }
 
-  generateImage(id: number) {
-    return this.http.post(`${this.api}/${id}/generate-image`, {});
+  generateImage(id: number, prompt?: string) {
+    const body: any = {};
+    if (prompt) body.prompt = prompt;
+    return this.http.post(`${this.api}/${id}/generate-image`, body);
   }
 
   // ================= ✅ CREATE POST WITH IMAGE =================

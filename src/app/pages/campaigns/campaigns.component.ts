@@ -51,7 +51,6 @@ export class CampaignsComponent implements OnInit {
 
   name = '';
   topic = '';
-  postNumber = 1;
 
   campaignId: number | null = null;
 
@@ -260,12 +259,19 @@ export class CampaignsComponent implements OnInit {
 
   // ================= GENERATE IMAGE =================
 
+  RISKY_KEYWORDS = ['face', 'person', 'people', 'human', 'hand', 'finger', 'text', 'words', 'realistic', 'photo'];
+
+  checkRiskyKeywords(prompt: string): boolean {
+    const lower = prompt.toLowerCase();
+    return this.RISKY_KEYWORDS.some(kw => lower.includes(kw));
+  }
+
   generateImage(post: any) {
     if (!post.content) return;
     
     post.generatingImage = true;
 
-    this.postService.generateImage(post.id).subscribe({
+    this.postService.generateImage(post.id, post.imagePrompt || undefined).subscribe({
       next: (res: any) => {
         post.imageUrl = res.imageUrl || res.url;
         post.generatingImage = false;
@@ -327,7 +333,7 @@ export class CampaignsComponent implements OnInit {
   generate() {
     if (this.showExistingMode && this.campaignId) {
       this.loading = true;
-      this.campaignService.generateForExisting(this.campaignId, this.postNumber).subscribe({
+      this.campaignService.generateForExisting(this.campaignId).subscribe({
         next: (res: any) => {
           this.posts = [...this.posts, ...res];
           this.loading = false;
@@ -344,8 +350,7 @@ export class CampaignsComponent implements OnInit {
 
     this.campaignService.generateCampaign({
       name: this.name,
-      topic: this.topic,
-      postNumber: this.postNumber
+      topic: this.topic
     }).subscribe({
       next: (res: any) => {
         this.posts = res;
