@@ -27,5 +27,5 @@ export const routes: Routes = [
     {path: 'company/:companyName', component: CompanyDetailsComponent },
     {path: 'patterns', component: PatternsComponent },
     {path: 'calendar', component: CalendarComponent },
-    {path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+    {path: '', redirectTo: '/login', pathMatch: 'full' },
 ];

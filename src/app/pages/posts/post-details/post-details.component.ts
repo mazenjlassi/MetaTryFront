@@ -290,9 +290,10 @@ export class PostDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   riskyKeywordsWarning = false;
 
-  checkRiskyKeywords() {
+  checkRiskyKeywords(): boolean {
     const lower = this.imagePrompt.toLowerCase();
     this.riskyKeywordsWarning = this.RISKY_KEYWORDS.some(kw => lower.includes(kw));
+    return this.riskyKeywordsWarning;
   }
 
   generateImage() {

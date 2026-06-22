@@ -280,4 +280,40 @@ describe('PostDetailsComponent', () => {
     component.chart = null;
     expect(() => component.ngOnDestroy()).not.toThrow();
   });
+
+  it('generateImage with prompt sends body with prompt', () => {
+    component.post = { id: 1 };
+    component.imagePrompt = 'cat art vibrant';
+    component.generateImage();
+
+    const req = httpMock.expectOne('http://localhost:8081/posts/1/generate-image');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ prompt: 'cat art vibrant' });
+    req.flush({ imageUrl: 'http://example.com/img.png' });
+  });
+
+  it('generateImage without prompt sends empty body', () => {
+    component.post = { id: 1 };
+    component.imagePrompt = '';
+    component.generateImage();
+
+    const req = httpMock.expectOne('http://localhost:8081/posts/1/generate-image');
+    expect(req.request.body).toEqual({});
+    req.flush({ imageUrl: 'http://example.com/img.png' });
+  });
+
+  it('checkRiskyKeywords detects risky words', () => {
+    component.imagePrompt = 'a photo of a person smiling';
+    expect(component.checkRiskyKeywords()).toBeTrue();
+  });
+
+  it('checkRiskyKeywords returns false for safe prompts', () => {
+    component.imagePrompt = 'abstract geometric shapes vibrant colors';
+    expect(component.checkRiskyKeywords()).toBeFalse();
+  });
+
+  it('checkRiskyKeywords returns false for empty prompt', () => {
+    component.imagePrompt = '';
+    expect(component.checkRiskyKeywords()).toBeFalse();
+  });
 });
